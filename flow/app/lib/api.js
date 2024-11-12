@@ -6,15 +6,6 @@ const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
-// Interceptor to attach token if it exists in localStorage
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('authToken');
-  if (token) {
-    config.headers.Authorization = `Token ${token}`;
-  }
-  return config;
-}, error => Promise.reject(error));
-
 /**
  * Login function
  * @param {string} email - User's email
@@ -23,13 +14,14 @@ api.interceptors.request.use((config) => {
  */
 export const login = async (email, password) => {
   try {
-    const response = await api.post('/login/login/', { email, password }); // Update with the correct endpoint
-    const { token, user_id, email: userEmail } = response.data;
+    const response = await api.post('/login/login/', { email, password });
+    const { access, refresh } = response.data;  // Update to retrieve JWT tokens
 
-    // Store token in localStorage for subsequent requests
-    localStorage.setItem('authToken', token);
+    // Save tokens in localStorage after receiving them from server
+    localStorage.setItem('authToken', access);
+    localStorage.setItem('refreshToken', refresh);
 
-    return { token, user_id, email: userEmail };
+    return response.data;
   } catch (error) {
     console.error('Login error:', error.response?.data || error.message);
     throw error;
@@ -41,8 +33,17 @@ export const login = async (email, password) => {
  */
 export const logout = async () => {
   try {
-    const response = await api.post('/login/logout/');
-    localStorage.removeItem('authToken'); // Remove token on logout
+    const token = localStorage.getItem('authToken'); // Fetch token for logout only
+    const response = await api.post('/login/logout/', {}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    // Clear tokens after logout
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('refreshToken');
+
     return response.data;
   } catch (error) {
     console.error('Logout error:', error.response?.data || error.message);
