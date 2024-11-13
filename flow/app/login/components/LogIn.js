@@ -23,7 +23,7 @@ export default function LoginComponent() {
 
       // Redirect to dashboard if login is successful and mounted
       if (mounted) {
-        router.push('/dashboard'); // Use router.push from next/navigation
+        router.push('/user-info'); // Use router.push from next/navigation
       }
     } catch (err) {
       setError('Invalid email or password');
