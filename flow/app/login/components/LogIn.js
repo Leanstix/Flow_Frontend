@@ -19,29 +19,41 @@ export default function LoginComponent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await login(email, password); // Login API call
-      const { token, user_id, email: userEmail, refresh, ...extraContents } = response;
-
+      const response = await login(email, password);
+  
+      if (!response) throw new Error('Empty response from login API');
+  
+      const {
+        access,
+        email: userEmail,
+        user_id,
+        university_id,
+        refresh,
+        ...extraContents
+      } = response;
+  
       console.log("Login response:", response);
-
-      if (Object.keys(extraContents).length > 0) {
-        // Save the full response as a cookie if additional contents exist
-        Cookies.set("user_data", JSON.stringify(response), {
-          expires: 7, // 7 days expiration
-          secure: true, // Secure flag for HTTPS
-          sameSite: "strict", // SameSite policy
-        });
-
-        // Redirect to "/home"
+  
+      const additionalFieldsExist = Object.keys(extraContents).length > 0;
+  
+      // Save the full response as a cookie
+      Cookies.set("user_data", JSON.stringify(response), {
+        expires: 7, // 7 days expiration
+        secure: true,
+        sameSite: "strict",
+      });
+  
+      if (additionalFieldsExist) {
         if (mounted) router.push("/home");
       } else {
-        // Redirect to "/user-info" if only user_id and email exist
         if (mounted) router.push("/user-info");
       }
     } catch (err) {
       setError("Invalid email or password");
+      console.error(err);
     }
   };
+
 
   if (!mounted) return null; // Prevents server-side rendering issues
 
@@ -54,7 +66,9 @@ export default function LoginComponent() {
         <hr className="mt-3" />
         <form onSubmit={handleSubmit}>
           <div className="mt-3">
-            <label htmlFor="email" className="block text-base mb-2">Username</label>
+            <label htmlFor="email" className="block text-base mb-2">
+              Username
+            </label>
             <input
               type="email"
               id="email"
@@ -66,7 +80,9 @@ export default function LoginComponent() {
             />
           </div>
           <div className="mt-3">
-            <label htmlFor="password" className="block text-base mb-2">Password</label>
+            <label htmlFor="password" className="block text-base mb-2">
+              Password
+            </label>
             <input
               type="password"
               id="password"
@@ -80,10 +96,14 @@ export default function LoginComponent() {
           <div className="mt-3 flex justify-between items-center">
             <div>
               <input type="checkbox" id="rememberMe" />
-              <label htmlFor="rememberMe" className="ml-1">Remember Me</label>
+              <label htmlFor="rememberMe" className="ml-1">
+                Remember Me
+              </label>
             </div>
             <div>
-              <a href="#" className="text-purple-800 font-semibold">Forgot Password?</a>
+              <a href="#" className="text-purple-800 font-semibold">
+                Forgot Password?
+              </a>
             </div>
           </div>
           <div className="mt-5">

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://127.0.0.1:8000'; // Base URL for Django backend
+const API_BASE_URL = 'http://127.0.0.1:8000/api'; // Base URL for Django backend
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -15,18 +15,20 @@ const api = axios.create({
 export const login = async (email, password) => {
   try {
     const response = await api.post('/login/login/', { email, password });
-    const { access, refresh } = response.data;
 
-    // Save tokens in localStorage after receiving them from server
-    localStorage.setItem('authToken', access);
-    localStorage.setItem('refreshToken', refresh);
+    if (!response?.data?.access || !response?.data?.refresh) {
+      throw new Error('Invalid token structure received from server');
+    }
+
+    // Save tokens in localStorage
+    localStorage.setItem('authToken', response.data.access);
+    localStorage.setItem('refreshToken', response.data.refresh);
 
     return response.data;
   } catch (error) {
     console.error('Login error:', error.response?.data || error.message);
     throw error;
-  }
-};
+  }}
 
 /**
  * Logout function
@@ -39,7 +41,7 @@ export const logout = async () => {
     }
 
     const response = await api.post(
-      "/login/logout/",
+      "/logout/",
       { refresh: refreshToken }, // Send token in the body
       {
         headers: {
@@ -96,6 +98,28 @@ export const updateUserProfile = async (formData) => {
     return response.data;
   } catch (error) {
     console.error('Profile Update error:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+//---------------------- Post API Calls -----------------------
+
+export const getPosts = async () => {
+  try {
+    const response = await api.get("/api/posts/");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    throw error;
+  }
+};
+
+export const createPost = async (postData) => {
+  try {
+    const response = await api.post("/api/posts/", postData);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating post:", error);
     throw error;
   }
 };
