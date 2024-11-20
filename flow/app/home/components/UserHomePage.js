@@ -1,34 +1,42 @@
 "use client";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie"; // For accessing cookies
-import { logout } from "@/app/lib/api";
+import { logout, createPost, getPosts } from "@/app/lib/api"; // Import getPosts API function
 import { useRouter } from "next/navigation"; // For navigation
 import Image from "next/image"; // Import Next.js Image component
 
 export default function HomePage() {
   const [userData, setUserData] = useState(null);
+  const [newPostContent, setNewPostContent] = useState("");
+  const [posts, setPosts] = useState([]);
+  const [showPostPopup, setShowPostPopup] = useState(false); // For toggling the popup
   const router = useRouter(); // Initialize router for navigation
 
-  // Fetch user data from cookies on component mount
+  // Fetch user data and posts on component mount
   useEffect(() => {
     const cookieData = Cookies.get("user_data");
     if (cookieData) {
-      setUserData(JSON.parse(cookieData));
+      const parsedData = JSON.parse(cookieData);
+      setUserData(parsedData);
     }
+    fetchPosts(); // Fetch posts from the backend
   }, []);
+
+  const fetchPosts = async () => {
+    try {
+      const fetchedPosts = await getPosts(); // Call the getPosts API function
+      setPosts(fetchedPosts);
+    } catch (err) {
+      console.error("Failed to fetch posts:", err);
+      alert("An error occurred while fetching posts. Please try again.");
+    }
+  };
 
   if (!userData) {
     return <div>Loading...</div>; // Show a loading indicator while fetching user data
   }
 
-  const {
-    first_name,
-    last_name,
-    email,
-    UserName,
-    bio,
-    posts = [],
-  } = userData;
+  const { first_name, last_name, email, UserName, bio } = userData;
 
   const handleLogout = async () => {
     try {
@@ -41,28 +49,51 @@ export default function HomePage() {
     }
   };
 
+  const handleCreatePost = async () => {
+    if (!newPostContent.trim()) {
+      alert("Post content cannot be empty!");
+      return;
+    }
+    try {
+      const response = await createPost(newPostContent); // Call the createPost API
+      const newPost = {
+        content: newPostContent,
+        date: new Date().toLocaleString(),
+        likes: 0,
+        comments: 0,
+        reposts: 0,
+      };
+
+      // Update the posts state to include the new post at the top
+      setPosts([newPost, ...posts]);
+      setNewPostContent(""); // Reset the input field
+      setShowPostPopup(false); // Close the popup
+    } catch (err) {
+      console.error("Failed to create post:", err);
+      alert("An error occurred while creating the post. Please try again.");
+    }
+  };
+
   return (
     <div className="w-screen text-black bg-white flex items-center justify-center">
       <div className="block justify-center items-center m-6">
         {/* User Profile Section */}
         <div className="flex items-center">
-            <Image
-                src="https://via.placeholder.com/200"
-                alt="User profile"
-                className="rounded-full mb-2"
-                width={200}
-                height={200}
-                unoptimized // Disables optimization for this image
-            />
+          <Image
+            src="https://via.placeholder.com/200"
+            alt="User profile"
+            className="rounded-full mb-2"
+            width={200}
+            height={200}
+            unoptimized // Disables optimization for this image
+          />
         </div>
         <div>
-            <div className="font-bold text-[26px]">
+          <div className="font-bold text-[26px]">
             {first_name} {last_name} (
             <span className="font-normal text-[18px]">{email}</span>)
-            </div>
-            <div className="font-light text-center">
-            {bio}
-            </div>
+          </div>
+          <div className="font-light text-center">{bio}</div>
         </div>
         <div className="flex mt-6">
           <div className="bg-purple-500 px-3 rounded-lg w-fit py-1 text-[26px] text-white font-bold">
@@ -75,10 +106,14 @@ export default function HomePage() {
             Followers
           </div>
         </div>
+        {/* New Post Button */}
         <div className="-ml-6">
-          <div className="mt-3 bg-purple-500 w-fit px-3 py-1 font-bold text-white rounded-lg">
+          <button
+            onClick={() => setShowPostPopup(true)} // Show the popup
+            className="mt-3 bg-purple-500 w-fit px-3 py-1 font-bold text-white rounded-lg"
+          >
             New Post
-          </div>
+          </button>
         </div>
         {/* Logout Button */}
         <div className="mt-5">
@@ -122,6 +157,33 @@ export default function HomePage() {
             <p>No posts available.</p>
           )}
         </div>
+        {/* New Post Popup */}
+        {showPostPopup && (
+          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white p-4 rounded-lg">
+              <textarea
+                value={newPostContent}
+                onChange={(e) => setNewPostContent(e.target.value)}
+                className="w-full h-24 border rounded-md p-2"
+                placeholder="What's on your mind?"
+              ></textarea>
+              <div className="flex justify-end mt-2">
+                <button
+                  onClick={() => setShowPostPopup(false)} // Close the popup
+                  className="px-4 py-2 bg-gray-300 rounded-md mr-2"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleCreatePost} // Submit the post
+                  className="px-4 py-2 bg-purple-500 text-white rounded-md"
+                >
+                  Post
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
