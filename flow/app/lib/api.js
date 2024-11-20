@@ -33,20 +33,28 @@ export const login = async (email, password) => {
  */
 export const logout = async () => {
   try {
-    const token = localStorage.getItem('authToken');
-    const response = await api.post('/login/logout/', {}, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const refreshToken = localStorage.getItem("refreshToken"); // Fix key name
+    if (!refreshToken) {
+      throw new Error("No refresh token found.");
+    }
+
+    const response = await api.post(
+      "/login/logout/",
+      { refresh: refreshToken }, // Send token in the body
+      {
+        headers: {
+          Authorization: `Bearer ${refreshToken}`, // Optional for IsAuthenticated check
+        },
+      }
+    );
 
     // Clear tokens after logout
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('refreshToken');
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("refreshToken");
 
     return response.data;
   } catch (error) {
-    console.error('Logout error:', error.response?.data || error.message);
+    console.error("Logout error:", error.response?.data || error.message);
     throw error;
   }
 };

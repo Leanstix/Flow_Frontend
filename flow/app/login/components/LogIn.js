@@ -1,11 +1,12 @@
 "use client";
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // Import useRouter from next/navigation
-import { login } from '../../lib/api'; // Ensure this path is correct
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation"; // Import useRouter from next/navigation
+import { login } from "../../lib/api"; // Ensure this path is correct
+import Cookies from "js-cookie"; // Import js-cookie library
 
 export default function LoginComponent() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [mounted, setMounted] = useState(false);
   const router = useRouter(); // Initialize router here but only use it after mount
@@ -18,15 +19,27 @@ export default function LoginComponent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { token, user_id, email: userEmail } = await login(email, password);
-      console.log('Login successful!', { token, user_id, userEmail });
+      const response = await login(email, password); // Login API call
+      const { token, user_id, email: userEmail, refresh, ...extraContents } = response;
 
-      // Redirect to dashboard if login is successful and mounted
-      if (mounted) {
-        router.push('/user-info'); // Use router.push from next/navigation
+      console.log("Login response:", response);
+
+      if (Object.keys(extraContents).length > 0) {
+        // Save the full response as a cookie if additional contents exist
+        Cookies.set("user_data", JSON.stringify(response), {
+          expires: 7, // 7 days expiration
+          secure: true, // Secure flag for HTTPS
+          sameSite: "strict", // SameSite policy
+        });
+
+        // Redirect to "/home"
+        if (mounted) router.push("/home");
+      } else {
+        // Redirect to "/user-info" if only user_id and email exist
+        if (mounted) router.push("/user-info");
       }
     } catch (err) {
-      setError('Invalid email or password');
+      setError("Invalid email or password");
     }
   };
 
