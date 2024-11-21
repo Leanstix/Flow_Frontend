@@ -14,7 +14,7 @@ const api = axios.create({
  */
 export const login = async (email, password) => {
   try {
-    const response = await api.post('/login/login/', { email, password });
+    const response = await api.post('/login/', { email, password });
 
     if (!response?.data?.access || !response?.data?.refresh) {
       throw new Error('Invalid token structure received from server');
@@ -106,7 +106,7 @@ export const updateUserProfile = async (formData) => {
 
 export const getPosts = async () => {
   try {
-    const response = await api.get("/api/posts/");
+    const response = await api.get("/posts/");
     return response.data;
   } catch (error) {
     console.error("Error fetching posts:", error);
@@ -116,10 +116,19 @@ export const getPosts = async () => {
 
 export const createPost = async (postData) => {
   try {
-    const response = await api.post("/api/posts/", postData);
+    const token = localStorage.getItem('authToken'); // Retrieve token from localStorage
+    if (!token) {
+      throw new Error("User is not authenticated. Token missing.");
+    }
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+      },
+    };
+    const response = await api.post("/posts/", postData, config);
     return response.data;
   } catch (error) {
-    console.error("Error creating post:", error);
+    console.error("Error creating post:", error.response?.data || error.message);
     throw error;
   }
 };
