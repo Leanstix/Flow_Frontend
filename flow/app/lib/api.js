@@ -6,6 +6,8 @@ const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
+//---------------------- Login Function --------------------
+
 /**
  * Login function
  * @param {string} email - User's email
@@ -35,22 +37,23 @@ export const login = async (email, password) => {
  */
 export const logout = async () => {
   try {
-    const refreshToken = localStorage.getItem("refreshToken"); // Fix key name
+    const refreshToken = localStorage.getItem("refreshToken");
+
     if (!refreshToken) {
       throw new Error("No refresh token found.");
     }
 
     const response = await api.post(
       "/logout/",
-      { refresh: refreshToken }, // Send token in the body
+      {}, // No body is needed, passing refresh in headers
       {
         headers: {
-          Authorization: `Bearer ${refreshToken}`, // Optional for IsAuthenticated check
+          Authorization: `Bearer ${refreshToken}`,
         },
       }
     );
 
-    // Clear tokens after logout
+    // Clear tokens after successful logout
     localStorage.removeItem("authToken");
     localStorage.removeItem("refreshToken");
 
@@ -60,6 +63,25 @@ export const logout = async () => {
     throw error;
   }
 };
+
+//------------------ token getter --------------------------
+
+export const refreshToken = async () => {
+  try {
+    const storedRefreshToken = localStorage.getItem('refreshToken');
+    if (!storedRefreshToken) {
+      throw new Error('Refresh token not found.');
+    }
+    const response = await api.post('/token/refresh/', { refresh: storedRefreshToken });
+    localStorage.setItem('authToken', response.data.access); // Update the auth token
+    return response.data.access;
+  } catch (error) {
+    console.error('Token refresh error:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+//----------------------- User Registration -----------------------
 
 /**
  * Register (Sign-Up) function
@@ -85,10 +107,10 @@ export const signUp = async (userData) => {
  */
 export const updateUserProfile = async (formData) => {
   try {
-    const token = localStorage.getItem('authToken');
+    const access_token = localStorage.getItem('authToken');
     const config = {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
       },
     };
@@ -102,7 +124,7 @@ export const updateUserProfile = async (formData) => {
   }
 };
 
-//---------------------- Post API Calls -----------------------
+//---------------------- Posts API Calls -----------------------
 
 export const getPosts = async () => {
   try {
@@ -116,13 +138,13 @@ export const getPosts = async () => {
 
 export const createPost = async (postData) => {
   try {
-    const token = localStorage.getItem('authToken'); // Retrieve token from localStorage
-    if (!token) {
+    const access_token = localStorage.getItem('authToken'); // Retrieve token from localStorage
+    if (!access_token) {
       throw new Error("User is not authenticated. Token missing.");
     }
     const config = {
       headers: {
-        Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+        Authorization: `Bearer ${access_token}`, // Include the token in the Authorization header
       },
     };
     const response = await api.post("/posts/", postData, config);

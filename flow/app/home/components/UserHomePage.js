@@ -36,13 +36,15 @@ export default function HomePage() {
     return <div>Loading...</div>; // Show a loading indicator while fetching user data
   }
 
-  const { first_name, last_name, email, UserName, bio } = userData;
+  const { first_name, last_name, email, UserName, bio, user_id } = userData;
+  //console.log(refresh)
+  //console.log(access)
 
   const handleLogout = async () => {
     try {
-      await logout(); // Call the logout API
-      Cookies.remove("user_data"); // Remove user data cookie
-      router.push("/login"); // Redirect to the login page
+      await logout(); 
+      Cookies.remove("user_data"); 
+      router.push("/login");
     } catch (err) {
       console.error("Logout failed:", err);
       alert("An error occurred during logout. Please try again.");
@@ -58,10 +60,8 @@ export default function HomePage() {
       const response = await createPost(newPostContent); // Call the createPost API
       const newPost = {
         content: newPostContent,
-        date: new Date().toLocaleString(),
-        likes: 0,
-        comments: 0,
-        reposts: 0,
+        created_at: new Date().toLocaleString(),
+        id: user_id,
       };
 
       // Update the posts state to include the new post at the top
