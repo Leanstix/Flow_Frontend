@@ -128,20 +128,31 @@ export const updateUserProfile = async (formData) => {
 
 export const getPosts = async () => {
   try {
-    const response = await api.get("/posts/");
+    const access_token = localStorage.getItem("authToken"); // Retrieve token from localStorage
+    if (!access_token) {
+      throw new Error("User is not authenticated. Token missing.");
+    }
+    const config = {
+      headers: {
+        Authorization: `Bearer ${access_token}`, // Include the token in the header
+      },
+    };
+    const response = await api.get("/posts/", config); // Pass the config with headers
     return response.data;
   } catch (error) {
-    console.error("Error fetching posts:", error);
+    console.error("Error fetching posts:", error.response?.data || error.message);
     throw error;
   }
 };
 
-export const createPost = async (postData) => {
+export const createPost = async (content) => {
   try {
     const access_token = localStorage.getItem('authToken'); // Retrieve token from localStorage
     if (!access_token) {
       throw new Error("User is not authenticated. Token missing.");
     }
+    const postData = {content}
+    console.log("Sending postData:", postData);
     const config = {
       headers: {
         Authorization: `Bearer ${access_token}`, // Include the token in the Authorization header

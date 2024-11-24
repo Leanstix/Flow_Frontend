@@ -36,9 +36,9 @@ export default function HomePage() {
     return <div>Loading...</div>; // Show a loading indicator while fetching user data
   }
 
-  const { first_name, last_name, email, UserName, bio, user_id } = userData;
+  const { first_name, last_name, email, UserName, bio, user_id, access } = userData;
   //console.log(refresh)
-  //console.log(access)
+  console.log(access)
 
   const handleLogout = async () => {
     try {
@@ -57,16 +57,9 @@ export default function HomePage() {
       return;
     }
     try {
-      const response = await createPost(newPostContent); // Call the createPost API
-      const newPost = {
-        content: newPostContent,
-        created_at: new Date().toLocaleString(),
-        id: user_id,
-      };
-
-      // Update the posts state to include the new post at the top
-      setPosts([newPost, ...posts]);
-      setNewPostContent(""); // Reset the input field
+      const response = await createPost(newPostContent); // Backend handles ID, user, and created_at
+      setPosts([response, ...posts]); // Use the backend response directly
+      setNewPostContent(""); // Reset input field
       setShowPostPopup(false); // Close the popup
     } catch (err) {
       console.error("Failed to create post:", err);
