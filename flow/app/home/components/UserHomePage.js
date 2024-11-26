@@ -1,16 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
-import Cookies from "js-cookie"; // For accessing cookies
-import { logout, createPost, getPosts } from "@/app/lib/api"; // Import getPosts API function
-import { useRouter } from "next/navigation"; // For navigation
-import Image from "next/image"; // Import Next.js Image component
+import Cookies from "js-cookie";
+import { logout, createPost, getPosts } from "@/app/lib/api";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function HomePage() {
   const [userData, setUserData] = useState(null);
   const [newPostContent, setNewPostContent] = useState("");
   const [posts, setPosts] = useState([]);
-  const [showPostPopup, setShowPostPopup] = useState(false); // For toggling the popup
-  const router = useRouter(); // Initialize router for navigation
+  const [showPostPopup, setShowPostPopup] = useState(false);
+  const router = useRouter();
 
   // Fetch user data and posts on component mount
   useEffect(() => {
@@ -19,12 +19,12 @@ export default function HomePage() {
       const parsedData = JSON.parse(cookieData);
       setUserData(parsedData);
     }
-    fetchPosts(); // Fetch posts from the backend
+    fetchPosts();
   }, []);
 
   const fetchPosts = async () => {
     try {
-      const fetchedPosts = await getPosts(); // Call the getPosts API function
+      const fetchedPosts = await getPosts();
       setPosts(fetchedPosts);
     } catch (err) {
       console.error("Failed to fetch posts:", err);
@@ -32,18 +32,10 @@ export default function HomePage() {
     }
   };
 
-  if (!userData) {
-    return <div>Loading...</div>; // Show a loading indicator while fetching user data
-  }
-
-  const { first_name, last_name, email, UserName, bio, user_id, access } = userData;
-  //console.log(refresh)
-  console.log(access)
-
   const handleLogout = async () => {
     try {
-      await logout(); 
-      Cookies.remove("user_data"); 
+      await logout();
+      Cookies.remove("user_data");
       router.push("/login");
     } catch (err) {
       console.error("Logout failed:", err);
@@ -57,15 +49,21 @@ export default function HomePage() {
       return;
     }
     try {
-      const response = await createPost(newPostContent); // Backend handles ID, user, and created_at
-      setPosts([response, ...posts]); // Use the backend response directly
-      setNewPostContent(""); // Reset input field
-      setShowPostPopup(false); // Close the popup
+      const response = await createPost(newPostContent);
+      setPosts([response, ...posts]);
+      setNewPostContent("");
+      setShowPostPopup(false);
     } catch (err) {
       console.error("Failed to create post:", err);
       alert("An error occurred while creating the post. Please try again.");
     }
   };
+
+  if (!userData) {
+    return <div>Loading...</div>;
+  }
+
+  const { first_name, last_name, email, UserName, bio } = userData;
 
   return (
     <div className="w-screen text-black bg-white flex items-center justify-center">
@@ -78,7 +76,7 @@ export default function HomePage() {
             className="rounded-full mb-2"
             width={200}
             height={200}
-            unoptimized // Disables optimization for this image
+            unoptimized
           />
         </div>
         <div>
@@ -88,6 +86,7 @@ export default function HomePage() {
           </div>
           <div className="font-light text-center">{bio}</div>
         </div>
+        {/* Buttons */}
         <div className="flex mt-6">
           <div className="bg-purple-500 px-3 rounded-lg w-fit py-1 text-[26px] text-white font-bold">
             Messages
@@ -100,23 +99,19 @@ export default function HomePage() {
           </div>
         </div>
         {/* New Post Button */}
-        <div className="-ml-6">
-          <button
-            onClick={() => setShowPostPopup(true)} // Show the popup
-            className="mt-3 bg-purple-500 w-fit px-3 py-1 font-bold text-white rounded-lg"
-          >
-            New Post
-          </button>
-        </div>
+        <button
+          onClick={() => setShowPostPopup(true)}
+          className="mt-3 bg-purple-500 w-fit px-3 py-1 font-bold text-white rounded-lg"
+        >
+          New Post
+        </button>
         {/* Logout Button */}
-        <div className="mt-5">
-          <button
-            onClick={handleLogout}
-            className="border-2 border-red-500 bg-red-500 text-white py-1 w-full rounded-md hover:bg-transparent hover:text-red-500 font-semibold"
-          >
-            Logout
-          </button>
-        </div>
+        <button
+          onClick={handleLogout}
+          className="mt-5 border-2 border-red-500 bg-red-500 text-white py-1 w-full rounded-md hover:bg-transparent hover:text-red-500 font-semibold"
+        >
+          Logout
+        </button>
         {/* User Posts Section */}
         <div>
           {posts.length > 0 ? (
@@ -128,7 +123,7 @@ export default function HomePage() {
                   height={60}
                   className="rounded-full -ml-6"
                   alt="Post user profile"
-                  priority // Optimized for performance
+                  priority
                 />
                 <p className="ml-1 text-[20px]">
                   {UserName} (<span className="text-gray-600 text-[16px]">{email}</span>)
@@ -136,13 +131,6 @@ export default function HomePage() {
                 <p>posted on {post.date}</p>
                 <div>
                   <p>{post.content}</p>
-                  <hr />
-                  <div className="grid grid-cols-4">
-                    <div className="col-span-1">❤({post.likes})</div>
-                    <div className="col-span-1">comments({post.comments})</div>
-                    <div className="col-span-1">Reposts({post.reposts})</div>
-                    <div className="col-span-1">Report Post</div>
-                  </div>
                 </div>
               </div>
             ))
@@ -162,13 +150,13 @@ export default function HomePage() {
               ></textarea>
               <div className="flex justify-end mt-2">
                 <button
-                  onClick={() => setShowPostPopup(false)} // Close the popup
+                  onClick={() => setShowPostPopup(false)}
                   className="px-4 py-2 bg-gray-300 rounded-md mr-2"
                 >
                   Cancel
                 </button>
                 <button
-                  onClick={handleCreatePost} // Submit the post
+                  onClick={handleCreatePost}
                   className="px-4 py-2 bg-purple-500 text-white rounded-md"
                 >
                   Post

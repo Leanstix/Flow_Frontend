@@ -8,58 +8,39 @@ const api = axios.create({
 
 //---------------------- Login Function --------------------
 
-/**
- * Login function
- * @param {string} email - User's email
- * @param {string} password - User's password
- * @returns {Promise} - Axios response with token and user data if successful
- */
 export const login = async (email, password) => {
   try {
     const response = await api.post('/login/', { email, password });
-
     if (!response?.data?.access || !response?.data?.refresh) {
       throw new Error('Invalid token structure received from server');
     }
-
-    // Save tokens in localStorage
     localStorage.setItem('authToken', response.data.access);
     localStorage.setItem('refreshToken', response.data.refresh);
-
     return response.data;
   } catch (error) {
     console.error('Login error:', error.response?.data || error.message);
     throw error;
-  }}
+  }
+};
 
-/**
- * Logout function
- */
+//---------------------- Logout Function --------------------
+
 export const logout = async () => {
   try {
-    const refreshToken = localStorage.getItem("refreshToken");
-
+    const refreshToken = localStorage.getItem('refreshToken');
     if (!refreshToken) {
-      throw new Error("No refresh token found.");
+      throw new Error('No refresh token found.');
     }
-
     const response = await api.post(
-      "/logout/",
-      {}, // No body is needed, passing refresh in headers
-      {
-        headers: {
-          Authorization: `Bearer ${refreshToken}`,
-        },
-      }
+      '/logout/',
+      {},
+      { headers: { Authorization: `Bearer ${refreshToken}` } }
     );
-
-    // Clear tokens after successful logout
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("refreshToken");
-
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('refreshToken');
     return response.data;
   } catch (error) {
-    console.error("Logout error:", error.response?.data || error.message);
+    console.error('Logout error:', error.response?.data || error.message);
     throw error;
   }
 };
@@ -124,44 +105,34 @@ export const updateUserProfile = async (formData) => {
   }
 };
 
-//---------------------- Posts API Calls -----------------------
+//---------------------- Posts API Calls --------------------
 
 export const getPosts = async () => {
   try {
-    const access_token = localStorage.getItem("authToken"); // Retrieve token from localStorage
-    if (!access_token) {
-      throw new Error("User is not authenticated. Token missing.");
+    const accessToken = localStorage.getItem('authToken');
+    if (!accessToken) {
+      throw new Error('User is not authenticated. Token missing.');
     }
-    const config = {
-      headers: {
-        Authorization: `Bearer ${access_token}`, // Include the token in the header
-      },
-    };
-    const response = await api.get("/posts/", config); // Pass the config with headers
+    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
+    const response = await api.get('/posts/', config);
     return response.data;
   } catch (error) {
-    console.error("Error fetching posts:", error.response?.data || error.message);
+    console.error('Error fetching posts:', error.response?.data || error.message);
     throw error;
   }
 };
 
 export const createPost = async (content) => {
   try {
-    const access_token = localStorage.getItem('authToken'); // Retrieve token from localStorage
-    if (!access_token) {
-      throw new Error("User is not authenticated. Token missing.");
+    const accessToken = localStorage.getItem('authToken');
+    if (!accessToken) {
+      throw new Error('User is not authenticated. Token missing.');
     }
-    const postData = {content}
-    console.log("Sending postData:", postData);
-    const config = {
-      headers: {
-        Authorization: `Bearer ${access_token}`, // Include the token in the Authorization header
-      },
-    };
-    const response = await api.post("/posts/", postData, config);
+    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
+    const response = await api.post('/posts/', { content }, config);
     return response.data;
   } catch (error) {
-    console.error("Error creating post:", error.response?.data || error.message);
+    console.error('Error creating post:', error.response?.data || error.message);
     throw error;
   }
 };
