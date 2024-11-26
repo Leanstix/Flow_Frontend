@@ -243,3 +243,71 @@ export const markMessageAsRead = async (messageId) => {
     throw error;
   }
 };
+
+
+// -----------------Send friend request -------------------
+export const sendFriendRequest = async (toUserId) => {
+  try {
+    const accessToken = localStorage.getItem('authToken');
+    if (!accessToken) {
+      throw new Error('User is not authenticated. Token missing.');
+    }
+    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
+    const response = await api.post('/friend-requests/', { to_user_id: toUserId }, config);
+    return response.data;
+  } catch (error) {
+    console.error('Error sending friend request:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// -----------------Accept friend request -------------------------
+
+export const acceptFriendRequest = async (friendRequestId) => {
+  try {
+    const accessToken = localStorage.getItem('authToken');
+    if (!accessToken) {
+      throw new Error('User is not authenticated. Token missing.');
+    }
+    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
+    const response = await api.patch(`/friend-requests/${friendRequestId}/`, {}, config);
+    return response.data;
+  } catch (error) {
+    console.error('Error accepting friend request:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// -----------------Get flow requests ---------------------
+
+export const getFriendRequests = async () => {
+  try {
+    const accessToken = localStorage.getItem('authToken');
+    if (!accessToken) {
+      throw new Error('User is not authenticated. Token missing.');
+    }
+    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
+    const response = await api.get('/friend-requests/', config);
+    return response.data;
+  } catch (error) {
+    console.error('Error retrieving friend requests:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// -----------------Search users ---------------------
+
+export const searchUsers = async (query) => {
+  try {
+    const accessToken = localStorage.getItem('authToken');
+    if (!accessToken) {
+      throw new Error('User is not authenticated. Token missing.');
+    }
+    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
+    const response = await api.get('/search/', { params: { q: query }, ...config });
+    return response.data;
+  } catch (error) {
+    console.error('Error searching users:', error.response?.data || error.message);
+    throw error;
+  }
+};
