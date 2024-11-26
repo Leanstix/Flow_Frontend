@@ -91,9 +91,12 @@ export default function HomePage() {
           <div className="bg-purple-500 px-3 rounded-lg w-fit py-1 text-[26px] text-white font-bold">
             Messages
           </div>
-          <div className="bg-purple-500 px-3 rounded-lg w-fit py-1 text-[26px] text-white font-bold mx-5">
+          <button
+            onClick={() => router.push("/flowmates")}
+            className="bg-purple-500 px-3 rounded-lg w-fit py-1 text-[26px] text-white font-bold mx-5"
+          >
             Flowmates
-          </div>
+          </button>
           <div className="bg-purple-500 px-3 rounded-lg w-fit py-1 text-[26px] text-white font-bold">
             Followers
           </div>
