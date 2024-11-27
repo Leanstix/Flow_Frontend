@@ -318,7 +318,7 @@ export const toggleLike = async (postId) => {
   try {
     const accessToken = localStorage.getItem('authToken');
     const config = { headers: { Authorization: `Bearer ${accessToken}` } };
-    const response = await api.post(`/posts/${postId}/toggle-like/`, {}, config);
+    const response = await api.post(`/posts/${postId}/like/`, {}, config);
     return response.data;
   } catch (error) {
     console.error('Error toggling like:', error);
@@ -332,7 +332,7 @@ export const addComment = async (postId, content) => {
   try {
     const accessToken = localStorage.getItem('authToken');
     const config = { headers: { Authorization: `Bearer ${accessToken}` } };
-    const response = await api.post(`/posts/${postId}/comments/`, { content }, config);
+    const response = await api.post(`/posts/${postId}/comment/`, { content }, config);
     return response.data;
   } catch (error) {
     console.error('Error adding comment:', error);
