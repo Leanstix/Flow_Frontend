@@ -7,6 +7,7 @@ import { updateUserProfile } from '../../lib/api'; // Ensure correct path for ap
 const UserProfileUpdate = () => {
   const router = useRouter();
   const [profileData, setProfileData] = useState({
+    user_name: '', // Added user_name
     first_name: '',
     last_name: '',
     gender: '',
@@ -58,6 +59,18 @@ const UserProfileUpdate = () => {
         <h1 className="text-3xl block text-center font-semibold"><i className="fa-solid fa-user"></i> User Info</h1>
         <hr className="mt-3" />
         <form onSubmit={handleSubmit}>
+          {/* User Name Field */}
+          <div className="mt-3">
+            <label className="block text-base mb-2">User name</label>
+            <input
+              type="text"
+              name="user_name"
+              className="border w-full text-base px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600"
+              placeholder="Enter user name"
+              value={profileData.user_name}
+              onChange={handleChange}
+            />
+          </div>
           <div className="mt-3">
             <label className="block text-base mb-2">First name</label>
             <input
