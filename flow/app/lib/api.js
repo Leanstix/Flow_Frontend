@@ -311,3 +311,59 @@ export const searchUsers = async (query) => {
     throw error;
   }
 };
+
+// --------------------- Like post ----------------------
+
+export const toggleLike = async (postId) => {
+  try {
+    const accessToken = localStorage.getItem('authToken');
+    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
+    const response = await api.post(`/posts/${postId}/toggle-like/`, {}, config);
+    return response.data;
+  } catch (error) {
+    console.error('Error toggling like:', error);
+    throw error;
+  }
+};
+
+// ------------------------ add comment -----------------------
+
+export const addComment = async (postId, content) => {
+  try {
+    const accessToken = localStorage.getItem('authToken');
+    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
+    const response = await api.post(`/posts/${postId}/comments/`, { content }, config);
+    return response.data;
+  } catch (error) {
+    console.error('Error adding comment:', error);
+    throw error;
+  }
+};
+
+// ----------------------- repost ---------------------------
+
+export const repost = async (postId) => {
+  try {
+    const accessToken = localStorage.getItem('authToken');
+    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
+    const response = await api.post(`/posts/${postId}/repost/`, {}, config);
+    return response.data;
+  } catch (error) {
+    console.error('Error reposting:', error);
+    throw error;
+  }
+};
+
+// ------------------ report post -----------------------
+
+export const reportPost = async (postId) => {
+  try {
+    const accessToken = localStorage.getItem('authToken');
+    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
+    const response = await api.post(`/posts/${postId}/report/`, {}, config);
+    return response.data;
+  } catch (error) {
+    console.error('Error reporting post:', error);
+    throw error;
+  }
+};

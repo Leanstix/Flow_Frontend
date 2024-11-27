@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import { logout, createPost, getPosts } from "@/app/lib/api";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { toggleLike, addComment, repost, reportPost } from "@/app/lib/api"; // Assuming this is the correct import path
 
 export default function HomePage() {
   const [userData, setUserData] = useState(null);
@@ -64,6 +65,68 @@ export default function HomePage() {
   }
 
   const { first_name, last_name, email, UserName, bio } = userData;
+
+  // Post Interaction Component
+  const PostInteraction = ({ post }) => {
+    const [liked, setLiked] = useState(post.liked);
+    const [likesCount, setLikesCount] = useState(post.likes_count);
+    const [comment, setComment] = useState("");
+
+    const handleLikeToggle = async () => {
+      try {
+        const data = await toggleLike(post.id);
+        setLiked(data.liked);
+        setLikesCount(data.likes_count);
+      } catch (error) {
+        console.error("Error toggling like:", error);
+      }
+    };
+
+    const handleAddComment = async () => {
+      try {
+        await addComment(post.id, comment);
+        setComment("");
+        alert("Comment added successfully!");
+      } catch (error) {
+        console.error("Error adding comment:", error);
+      }
+    };
+
+    const handleRepost = async () => {
+      try {
+        await repost(post.id);
+        alert("Post reposted successfully!");
+      } catch (error) {
+        console.error("Error reposting:", error);
+      }
+    };
+
+    const handleReportPost = async () => {
+      try {
+        await reportPost(post.id);
+        alert("Post reported successfully!");
+      } catch (error) {
+        console.error("Error reporting post:", error);
+      }
+    };
+
+    return (
+      <div className="post-interactions">
+        <button onClick={handleLikeToggle}>
+          {liked ? "💜" : "🤍"} {likesCount}
+        </button>
+        <input
+          type="text"
+          placeholder="Write a comment..."
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+        />
+        <button onClick={handleAddComment}>Comment</button>
+        <button onClick={handleRepost}>Repost</button>
+        <button onClick={handleReportPost}>Report</button>
+      </div>
+    );
+  };
 
   return (
     <div className="w-screen text-black bg-white flex items-center justify-center">
@@ -135,6 +198,8 @@ export default function HomePage() {
                 <div>
                   <p>{post.content}</p>
                 </div>
+                {/* Post Interaction Component */}
+                <PostInteraction post={post} />
               </div>
             ))
           ) : (
