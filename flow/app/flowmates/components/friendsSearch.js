@@ -69,10 +69,12 @@ const FriendSearch = () => {
 
         {searchResults.map((user) => (
           <div key={user.id} className="flex m-4 w-fit mx-auto items-center">
-            <div onClick={() => handleUserClick(user.user_name)} className="col-span-2 border w-[80px] h-[80px] rounded-full flex items-center justify-center bg-gray-200">
+            <div className="col-span-2 border w-[80px] h-[80px] rounded-full flex items-center justify-center bg-gray-200">
               {/* Replace with actual profile picture */}
               <span className="text-gray-500">
-                {user.user_name ? user.user_name[0] : user.email[0]}
+                <button onClick={() => handleUserClick(user.user_name)}>
+                  {user.user_name ? user.user_name[0] : user.email[0]}
+                </button>
               </span>
             </div>
             <div className="justify-start col-span-7 grid grid-rows-3 items-left ml-4">
