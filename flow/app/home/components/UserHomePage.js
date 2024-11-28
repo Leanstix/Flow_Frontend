@@ -1,24 +1,38 @@
-"use client";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { logout, createPost, getPosts } from "@/app/lib/api";
+import {
+  logout,
+  createPost,
+  getPosts,
+  toggleLike,
+  addComment,
+  repost,
+  reportPost,
+  acceptFriendRequest,
+  getFriendRequests,
+  getFriends, // API to fetch friends
+} from "@/app/lib/api";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { toggleLike, addComment, repost, reportPost } from "@/app/lib/api"; // Assuming this is the correct import path
 
 export default function HomePage() {
   const [userData, setUserData] = useState(null);
   const [newPostContent, setNewPostContent] = useState("");
   const [posts, setPosts] = useState([]);
   const [showPostPopup, setShowPostPopup] = useState(false);
+  const [friendRequests, setFriendRequests] = useState([]);
+  const [showFriendRequests, setShowFriendRequests] = useState(false);
+  const [friends, setFriends] = useState([]);
+  const [showFriends, setShowFriends] = useState(false);
+  const [activePostId, setActivePostId] = useState(null);
+  const [commentContent, setCommentContent] = useState("");
+
   const router = useRouter();
 
-  // Fetch user data and posts on component mount
   useEffect(() => {
     const cookieData = Cookies.get("user_data");
     if (cookieData) {
-      const parsedData = JSON.parse(cookieData);
-      setUserData(parsedData);
+      setUserData(JSON.parse(cookieData));
     }
     fetchPosts();
   }, []);
@@ -29,7 +43,34 @@ export default function HomePage() {
       setPosts(fetchedPosts);
     } catch (err) {
       console.error("Failed to fetch posts:", err);
-      alert("An error occurred while fetching posts. Please try again.");
+    }
+  };
+
+  const fetchFriendRequests = async () => {
+    try {
+      const fetchedRequests = await getFriendRequests();
+      setFriendRequests(fetchedRequests);
+    } catch (err) {
+      console.error("Failed to fetch friend requests:", err);
+    }
+  };
+
+  const fetchFriends = async () => {
+    try {
+      const fetchedFriends = await getFriends();
+      setFriends(fetchedFriends);
+    } catch (err) {
+      console.error("Failed to fetch friends:", err);
+    }
+  };
+
+  const handleAcceptRequest = async (requestId) => {
+    try {
+      await acceptFriendRequest(requestId);
+      setFriendRequests((prev) => prev.filter((req) => req.id !== requestId));
+      alert("Friend request accepted!");
+    } catch (err) {
+      console.error("Error accepting friend request:", err);
     }
   };
 
@@ -40,7 +81,6 @@ export default function HomePage() {
       router.push("/login");
     } catch (err) {
       console.error("Logout failed:", err);
-      alert("An error occurred during logout. Please try again.");
     }
   };
 
@@ -56,7 +96,21 @@ export default function HomePage() {
       setShowPostPopup(false);
     } catch (err) {
       console.error("Failed to create post:", err);
-      alert("An error occurred while creating the post. Please try again.");
+    }
+  };
+
+  const handleAddComment = async (postId) => {
+    if (!commentContent.trim()) {
+      alert("Comment cannot be empty!");
+      return;
+    }
+    try {
+      await addComment(postId, commentContent);
+      alert("Comment added!");
+      setCommentContent("");
+      setActivePostId(null); // Close the comment box
+    } catch (err) {
+      console.error("Failed to add comment:", err);
     }
   };
 
@@ -64,176 +118,191 @@ export default function HomePage() {
     return <div>Loading...</div>;
   }
 
-  const { first_name, last_name, email, UserName, bio } = userData;
-
-  // Post Interaction Component
-  const PostInteraction = ({ post }) => {
-    const [liked, setLiked] = useState(post.liked);
-    const [likesCount, setLikesCount] = useState(post.likes_count);
-    const [comment, setComment] = useState("");
-
-    const handleLikeToggle = async () => {
-      try {
-        const data = await toggleLike(post.id);
-        setLiked(data.liked);
-        setLikesCount(data.likes_count);
-      } catch (error) {
-        console.error("Error toggling like:", error);
-      }
-    };
-
-    const handleAddComment = async () => {
-      try {
-        await addComment(post.id, comment);
-        setComment("");
-        alert("Comment added successfully!");
-      } catch (error) {
-        console.error("Error adding comment:", error);
-      }
-    };
-
-    const handleRepost = async () => {
-      try {
-        await repost(post.id);
-        alert("Post reposted successfully!");
-      } catch (error) {
-        console.error("Error reposting:", error);
-      }
-    };
-
-    const handleReportPost = async () => {
-      try {
-        await reportPost(post.id);
-        alert("Post reported successfully!");
-      } catch (error) {
-        console.error("Error reporting post:", error);
-      }
-    };
-
-    return (
-      <div className="post-interactions">
-        <button onClick={handleLikeToggle}>
-          {liked ? "💜" : "🤍"} {likesCount}
-        </button>
-        <input
-          type="text"
-          placeholder="Write a comment..."
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-        />
-        <button onClick={handleAddComment}>Comment</button>
-        <button onClick={handleRepost}>Repost</button>
-        <button onClick={handleReportPost}>Report</button>
-      </div>
-    );
-  };
+  const { first_name, last_name, email, bio } = userData;
 
   return (
-    <div className="w-screen text-black bg-white flex items-center justify-center">
-      <div className="block justify-center items-center m-6">
-        {/* User Profile Section */}
-        <div className="flex items-center">
-          <Image
-            src="https://via.placeholder.com/200"
-            alt="User profile"
-            className="rounded-full mb-2"
-            width={200}
-            height={200}
-            unoptimized
-          />
-        </div>
-        <div>
-          <div className="font-bold text-[26px]">
-            {first_name} {last_name} (
-            <span className="font-normal text-[18px]">{email}</span>)
-          </div>
-          <div className="font-light text-center">{bio}</div>
-        </div>
-        {/* Buttons */}
-        <div className="flex mt-6">
-          <div className="bg-purple-500 px-3 rounded-lg w-fit py-1 text-[26px] text-white font-bold">
-            Messages
-          </div>
+    <div className="bg-gray-100 min-h-screen">
+      {/* Header */}
+      <header className="bg-blue-600 text-white p-4">
+        <div className="max-w-5xl mx-auto flex justify-between items-center">
+          <h1 className="text-2xl font-bold">Flow</h1>
           <button
-            onClick={() => router.push("/flowmates")}
-            className="bg-purple-500 px-3 rounded-lg w-fit py-1 text-[26px] text-white font-bold mx-5"
+            onClick={handleLogout}
+            className="bg-red-500 px-4 py-2 rounded-md hover:bg-red-600"
           >
-            Flowmates
+            Logout
           </button>
-          <div className="bg-purple-500 px-3 rounded-lg w-fit py-1 text-[26px] text-white font-bold">
-            Followers
-          </div>
         </div>
-        {/* New Post Button */}
-        <button
-          onClick={() => setShowPostPopup(true)}
-          className="mt-3 bg-purple-500 w-fit px-3 py-1 font-bold text-white rounded-lg"
-        >
-          New Post
-        </button>
-        {/* Logout Button */}
-        <button
-          onClick={handleLogout}
-          className="mt-5 border-2 border-red-500 bg-red-500 text-white py-1 w-full rounded-md hover:bg-transparent hover:text-red-500 font-semibold"
-        >
-          Logout
-        </button>
-        {/* User Posts Section */}
-        <div>
-          {posts.length > 0 ? (
-            posts.map((post, index) => (
-              <div key={index} className="mt-3 flex w-fit py-1 font-bold rounded-lg">
-                <Image
-                  src="https://via.placeholder.com/60"
-                  width={60}
-                  height={60}
-                  className="rounded-full -ml-6"
-                  alt="Post user profile"
-                  priority
-                />
-                <p className="ml-1 text-[20px]">
-                  {UserName} (<span className="text-gray-600 text-[16px]">{email}</span>)
-                </p>
-                <p>posted on {post.date}</p>
-                <div>
-                  <p>{post.content}</p>
-                </div>
-                {/* Post Interaction Component */}
-                <PostInteraction post={post} />
-              </div>
-            ))
-          ) : (
-            <p>No posts available.</p>
-          )}
-        </div>
-        {/* New Post Popup */}
-        {showPostPopup && (
-          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white p-4 rounded-lg">
-              <textarea
-                value={newPostContent}
-                onChange={(e) => setNewPostContent(e.target.value)}
-                className="w-full h-24 border rounded-md p-2"
-                placeholder="What's on your mind?"
-              ></textarea>
-              <div className="flex justify-end mt-2">
-                <button
-                  onClick={() => setShowPostPopup(false)}
-                  className="px-4 py-2 bg-gray-300 rounded-md mr-2"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleCreatePost}
-                  className="px-4 py-2 bg-purple-500 text-white rounded-md"
-                >
-                  Post
-                </button>
-              </div>
+      </header>
+
+      {/* Main Content */}
+      <div className="max-w-5xl mx-auto p-6">
+        {/* User Profile */}
+        <div className="bg-white shadow rounded-lg p-6 mb-6">
+          <div className="flex items-center space-x-6">
+            <Image
+              src="https://via.placeholder.com/150"
+              alt="Profile Picture"
+              width={150}
+              height={150}
+              className="rounded-full"
+            />
+            <div>
+              <h2 className="text-xl font-bold">
+                {first_name} {last_name}
+              </h2>
+              <p className="text-gray-600">{email}</p>
+              <p className="mt-2 text-gray-700 italic">{bio}</p>
             </div>
           </div>
-        )}
+        </div>
+
+        {/* Actions */}
+        <div className="flex justify-between mb-6">
+          <button
+            onClick={() => setShowFriendRequests(true) || fetchFriendRequests()}
+            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+          >
+            View Flow Requests
+          </button>
+          <button
+            onClick={() => setShowFriends(true) || fetchFriends()}
+            className="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600"
+          >
+            View Friends
+          </button>
+          <button
+            onClick={() => setShowPostPopup(true)}
+            className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+          >
+            New Post
+          </button>
+        </div>
+
+        {/* Posts */}
+        <div className="space-y-4">
+          {posts.map((post) => (
+            <div
+              key={post.id}
+              className="bg-white shadow rounded-lg p-4 flex flex-col space-y-2"
+            >
+              <h3 className="font-bold text-lg">{post.author}</h3>
+              <p>{post.content}</p>
+              <div className="flex space-x-4 text-blue-500">
+                <button onClick={() => toggleLike(post.id)}>Like</button>
+                <button onClick={() => setActivePostId(post.id)}>Comment</button>
+                <button onClick={() => repost(post.id)}>Repost</button>
+              </div>
+              {activePostId === post.id && (
+                <div className="mt-2">
+                  <textarea
+                    className="w-full p-2 border rounded-md"
+                    rows="2"
+                    value={commentContent}
+                    onChange={(e) => setCommentContent(e.target.value)}
+                    placeholder="Type your comment here..."
+                  ></textarea>
+                  <button
+                    onClick={() => handleAddComment(post.id)}
+                    className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mt-2"
+                  >
+                    Submit Comment
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
+
+      {/* Friend List Modal */}
+      {showFriends && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+            <h2 className="text-xl font-bold mb-4">Friends List</h2>
+            {friends.length > 0 ? (
+              friends.map((friend) => (
+                <div key={friend.id} className="flex justify-between items-center mb-4">
+                  <p>{friend.name}</p>
+                </div>
+              ))
+            ) : (
+              <p>No friends found.</p>
+            )}
+            <button
+              onClick={() => setShowFriends(false)}
+              className="mt-4 w-full bg-gray-300 px-4 py-2 rounded-md hover:bg-gray-400"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Friend Requests Modal */}
+      {showFriendRequests && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+            <h2 className="text-xl font-bold mb-4">Friend Requests</h2>
+            {friendRequests.length > 0 ? (
+              friendRequests.map((req) => (
+                <div key={req.id} className="flex justify-between items-center mb-4">
+                  <div>
+                    <p className="font-semibold">{req.name}</p>
+                    <p className="text-gray-500 text-sm">{req.email}</p>
+                  </div>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleAcceptRequest(req.id)}
+                      className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                    >
+                      Accept
+                    </button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p>No friend requests found.</p>
+            )}
+            <button
+              onClick={() => setShowFriendRequests(false)}
+              className="mt-4 w-full bg-gray-300 px-4 py-2 rounded-md hover:bg-gray-400"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* New Post Popup */}
+      {showPostPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+            <h2 className="text-xl font-bold mb-4">Create a New Post</h2>
+            <textarea
+              className="w-full p-2 border rounded-md"
+              rows="4"
+              value={newPostContent}
+              onChange={(e) => setNewPostContent(e.target.value)}
+              placeholder="Write your post here..."
+            ></textarea>
+            <div className="mt-4 flex justify-between">
+              <button
+                onClick={handleCreatePost}
+                className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+              >
+                Post
+              </button>
+              <button
+                onClick={() => setShowPostPopup(false)}
+                className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

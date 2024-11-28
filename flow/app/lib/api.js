@@ -105,7 +105,7 @@ export const updateUserProfile = async (formData) => {
   }
 };
 
-//---------------------- Posts API Calls --------------------
+//---------------------- Get posts --------------------
 
 export const getPosts = async () => {
   try {
@@ -121,6 +121,8 @@ export const getPosts = async () => {
     throw error;
   }
 };
+
+// -----------------------Create Posts ----------------------
 
 export const createPost = async (content) => {
   try {
@@ -245,7 +247,7 @@ export const markMessageAsRead = async (messageId) => {
 };
 
 
-// -----------------Send friend request -------------------
+// -----------------Send flow request -------------------
 export const sendFriendRequest = async (toUserId) => {
   try {
     const accessToken = localStorage.getItem('authToken');
@@ -261,7 +263,7 @@ export const sendFriendRequest = async (toUserId) => {
   }
 };
 
-// -----------------Accept friend request -------------------------
+// -----------------Accept flow request -------------------------
 
 export const acceptFriendRequest = async (friendRequestId) => {
   try {
@@ -274,6 +276,23 @@ export const acceptFriendRequest = async (friendRequestId) => {
     return response.data;
   } catch (error) {
     console.error('Error accepting friend request:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// ----------------- Get Friends ---------------------
+
+export const getFriends = async () => {
+  try {
+    const accessToken = localStorage.getItem('authToken');
+    if (!accessToken) {
+      throw new Error('User is not authenticated. Token missing.');
+    }
+    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
+    const response = await api.get('/friends/', config);
+    return response.data;
+  } catch (error) {
+    console.error('Error retrieving friends:', error.response?.data || error.message);
     throw error;
   }
 };
