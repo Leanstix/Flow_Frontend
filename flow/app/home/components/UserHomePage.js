@@ -55,6 +55,9 @@ export default function HomePage() {
     }
   };
 
+  //const accessToken = localStorage.getItem('authToken');
+  //console.log(accessToken)
+
   const fetchFriends = async () => {
     try {
       const fetchedFriends = await getFriends();
@@ -223,7 +226,7 @@ export default function HomePage() {
             {friends.length > 0 ? (
               friends.map((friend) => (
                 <div key={friend.id} className="flex justify-between items-center mb-4">
-                  <p>{friend.name}</p>
+                  <p>{friend.user_name}</p>
                 </div>
               ))
             ) : (
