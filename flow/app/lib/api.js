@@ -359,6 +359,32 @@ export const addComment = async (postId, content) => {
   }
 };
 
+// ------------------------ Fetch Comments ------------------------
+
+/**
+ * Fetch comments for a specific post with pagination
+ * @param {string} postId - The ID of the post
+ * @param {number} page - The page number for pagination (optional, defaults to 1)
+ * @returns {Promise} - Axios response with comments data
+ */
+export const fetchComments = async (postId, page = 1) => {
+  try {
+    const accessToken = localStorage.getItem('authToken');
+    if (!accessToken) {
+      throw new Error('User is not authenticated. Token missing.');
+    }
+    const config = {
+      headers: { Authorization: `Bearer ${accessToken}` },
+      params: { limit: 10, page }, // Limiting results to 10 comments per request
+    };
+    const response = await api.get(`/posts/${postId}/comments/`, config);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching comments:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
 // ----------------------- repost ---------------------------
 
 export const repost = async (postId) => {

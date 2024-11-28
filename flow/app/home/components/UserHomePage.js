@@ -55,9 +55,6 @@ export default function HomePage() {
     }
   };
 
-  //const accessToken = localStorage.getItem('authToken');
-  //console.log(accessToken)
-
   const fetchFriends = async () => {
     try {
       const fetchedFriends = await getFriends();
@@ -196,6 +193,24 @@ export default function HomePage() {
                 <button onClick={() => setActivePostId(post.id)}>Comment</button>
                 <button onClick={() => repost(post.id)}>Repost</button>
               </div>
+
+              {/* Comments */}
+              <div className="mt-2 space-y-2">
+                {post.comments.length > 0 && (
+                  <>
+                    <p>{post.comments[0].content}</p> {/* Show only the first comment */}
+                    {post.comments.length > 1 && (
+                      <button
+                        onClick={() => alert("Show all comments")}
+                        className="text-blue-500 hover:underline"
+                      >
+                        See more
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+
               {activePostId === post.id && (
                 <div className="mt-2">
                   <textarea
@@ -248,24 +263,19 @@ export default function HomePage() {
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
             <h2 className="text-xl font-bold mb-4">Friend Requests</h2>
             {friendRequests.length > 0 ? (
-              friendRequests.map((req) => (
-                <div key={req.id} className="flex justify-between items-center mb-4">
-                  <div>
-                    <p className="font-semibold">{req.name}</p>
-                    <p className="text-gray-500 text-sm">{req.email}</p>
-                  </div>
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => handleAcceptRequest(req.id)}
-                      className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                    >
-                      Accept
-                    </button>
-                  </div>
+              friendRequests.map((request) => (
+                <div key={request.id} className="flex justify-between items-center mb-4">
+                  <p>{request.sender}</p>
+                  <button
+                    onClick={() => handleAcceptRequest(request.id)}
+                    className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                  >
+                    Accept
+                  </button>
                 </div>
               ))
             ) : (
-              <p>No friend requests found.</p>
+              <p>No friend requests.</p>
             )}
             <button
               onClick={() => setShowFriendRequests(false)}
@@ -277,19 +287,19 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* New Post Popup */}
+      {/* New Post Modal */}
       {showPostPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-            <h2 className="text-xl font-bold mb-4">Create a New Post</h2>
+            <h2 className="text-xl font-bold mb-4">Create New Post</h2>
             <textarea
               className="w-full p-2 border rounded-md"
               rows="4"
               value={newPostContent}
               onChange={(e) => setNewPostContent(e.target.value)}
-              placeholder="Write your post here..."
+              placeholder="What's on your mind?"
             ></textarea>
-            <div className="mt-4 flex justify-between">
+            <div className="flex justify-between items-center mt-4">
               <button
                 onClick={handleCreatePost}
                 className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
@@ -298,7 +308,7 @@ export default function HomePage() {
               </button>
               <button
                 onClick={() => setShowPostPopup(false)}
-                className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+                className="bg-gray-300 px-4 py-2 rounded-md hover:bg-gray-400"
               >
                 Cancel
               </button>
