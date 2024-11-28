@@ -1,3 +1,4 @@
+"use client"
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import {
@@ -196,7 +197,7 @@ export default function HomePage() {
 
               {/* Comments */}
               <div className="mt-2 space-y-2">
-                {post.comments.length > 0 && (
+                {(post.comments?.length > 0) ? (
                   <>
                     <p>{post.comments[0].content}</p> {/* Show only the first comment */}
                     {post.comments.length > 1 && (
@@ -208,6 +209,8 @@ export default function HomePage() {
                       </button>
                     )}
                   </>
+                ) : (
+                  <p>No comments yet.</p>
                 )}
               </div>
 
