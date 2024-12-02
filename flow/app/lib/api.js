@@ -53,8 +53,18 @@ export const refreshToken = async () => {
     if (!storedRefreshToken) {
       throw new Error('Refresh token not found.');
     }
-    const response = await api.post('/token/refresh/', { refresh: storedRefreshToken });
-    localStorage.setItem('authToken', response.data.access); // Update the auth token
+
+    const response = await api.post(
+      '/token/generate-access-token/',
+      {}, 
+      {
+        headers: {
+          Authorization: `Bearer ${storedRefreshToken}`,
+        },
+      }
+    );
+
+    localStorage.setItem('authToken', response.data.access);
     return response.data.access;
   } catch (error) {
     console.error('Token refresh error:', error.response?.data || error.message);
@@ -378,6 +388,7 @@ export const fetchComments = async (postId, page = 1) => {
       params: { limit: 10, page }, // Limiting results to 10 comments per request
     };
     const response = await api.get(`/posts/${postId}/comments/`, config);
+    console.log(response)
     return response.data;
   } catch (error) {
     console.error('Error fetching comments:', error.response?.data || error.message);

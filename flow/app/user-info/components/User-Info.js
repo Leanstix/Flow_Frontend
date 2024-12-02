@@ -47,7 +47,7 @@ const UserProfileUpdate = () => {
     try {
       // Making a PUT request using updateUserProfile from api.js
       await updateUserProfile(formData);
-      router.push('/profile'); // Redirect to profile page after successful update
+      router.push('/home'); // Redirect to profile page after successful update
     } catch (error) {
       console.error('Error updating profile:', error);
     }

@@ -12,14 +12,17 @@ import {
   acceptFriendRequest,
   getFriendRequests,
   getFriends, // API to fetch friends
+  fetchComments,
 } from "@/app/lib/api";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { comment } from "postcss";
 
 export default function HomePage() {
   const [userData, setUserData] = useState(null);
   const [newPostContent, setNewPostContent] = useState("");
   const [posts, setPosts] = useState([]);
+  const [postComment, setPostComment] = useState([])
   const [showPostPopup, setShowPostPopup] = useState(false);
   const [friendRequests, setFriendRequests] = useState([]);
   const [showFriendRequests, setShowFriendRequests] = useState(false);
@@ -44,6 +47,15 @@ export default function HomePage() {
       setPosts(fetchedPosts);
     } catch (err) {
       console.error("Failed to fetch posts:", err);
+    }
+  };
+
+  const getComments = async (postId) => {
+    try {
+      const comments = await fetchComments(postId); // Pass the postId here
+      setPostComment(comments); // Store the fetched comments
+    } catch (err) {
+      console.error("Failed to fetch comments:", err);
     }
   };
 
@@ -189,48 +201,39 @@ export default function HomePage() {
             >
               <h3 className="font-bold text-lg">{post.author}</h3>
               <p>{post.content}</p>
+              
               <div className="flex space-x-4 text-blue-500">
                 <button onClick={() => toggleLike(post.id)}>Like</button>
                 <button onClick={() => setActivePostId(post.id)}>Comment</button>
                 <button onClick={() => repost(post.id)}>Repost</button>
+                <button
+                  onClick={() => {
+                    setActivePostId(post.id);
+                    getComments(post.id);
+                  }}
+                >
+                  View Comments
+                </button>
               </div>
 
               {/* Comments */}
               <div className="mt-2 space-y-2">
-                {(post.comments?.length > 0) ? (
-                  <>
-                    <p>{post.comments[0].content}</p> {/* Show only the first comment */}
-                    {post.comments.length > 1 && (
-                      <button
-                        onClick={() => alert("Show all comments")}
-                        className="text-blue-500 hover:underline"
-                      >
-                        See more
-                      </button>
-                    )}
-                  </>
-                ) : (
-                  <p>No comments yet.</p>
-                )}
+                {postComment && postComment.map((comment) => (
+                  <p key={comment.id}>{comment.content}</p>
+                ))}
               </div>
 
-              {activePostId === post.id && (
-                <div className="mt-2">
-                  <textarea
-                    className="w-full p-2 border rounded-md"
-                    rows="2"
-                    value={commentContent}
-                    onChange={(e) => setCommentContent(e.target.value)}
-                    placeholder="Type your comment here..."
-                  ></textarea>
-                  <button
-                    onClick={() => handleAddComment(post.id)}
-                    className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mt-2"
-                  >
-                    Submit Comment
-                  </button>
-                </div>
-              )}
+              {activePostId === post.id && postComment && Array.isArray(postComment) && postComment.length > 0 ? (
+                  postComment.map((comment) => (
+                    <div key={comment.id} className="p-2 border-b">
+                      <p>
+                        <strong>{comment.user.username}:</strong> {comment.content}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="italic text-gray-500">No comments yet.</p>
+                )}
             </div>
           ))}
         </div>
