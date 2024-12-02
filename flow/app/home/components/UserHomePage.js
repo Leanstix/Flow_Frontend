@@ -1,4 +1,5 @@
-"use client"
+"use client";
+
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import {
@@ -16,13 +17,13 @@ import {
 } from "@/app/lib/api";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { comment } from "postcss";
+//import { comment } from "postcss";
 
 export default function HomePage() {
   const [userData, setUserData] = useState(null);
   const [newPostContent, setNewPostContent] = useState("");
   const [posts, setPosts] = useState([]);
-  const [postComment, setPostComment] = useState([])
+  const [postComments, setPostComments] = useState({}); // Stores comments per post
   const [showPostPopup, setShowPostPopup] = useState(false);
   const [friendRequests, setFriendRequests] = useState([]);
   const [showFriendRequests, setShowFriendRequests] = useState(false);
@@ -52,10 +53,18 @@ export default function HomePage() {
 
   const getComments = async (postId) => {
     try {
-      const comments = await fetchComments(postId); // Pass the postId here
-      setPostComment(comments); // Store the fetched comments
+      const response = await fetchComments(postId);
+      //console.log( "the response stored is",response.results)
+      setPostComments((prev) => ({
+        ...prev,
+        [postId]: response.results,
+      }));
     } catch (err) {
       console.error("Failed to fetch comments:", err);
+      setPostComments((prev) => ({
+        ...prev,
+        [postId]: [],
+      }));
     }
   };
 
@@ -65,6 +74,7 @@ export default function HomePage() {
       setFriendRequests(fetchedRequests);
     } catch (err) {
       console.error("Failed to fetch friend requests:", err);
+      alert("Could not load friend requests. Please try again later.");
     }
   };
 
@@ -74,6 +84,7 @@ export default function HomePage() {
       setFriends(fetchedFriends);
     } catch (err) {
       console.error("Failed to fetch friends:", err);
+      alert("Could not load friends. Please try again later.");
     }
   };
 
@@ -84,6 +95,7 @@ export default function HomePage() {
       alert("Friend request accepted!");
     } catch (err) {
       console.error("Error accepting friend request:", err);
+      alert("Failed to accept friend request. Please try again.");
     }
   };
 
@@ -94,6 +106,7 @@ export default function HomePage() {
       router.push("/login");
     } catch (err) {
       console.error("Logout failed:", err);
+      alert("Logout failed. Please try again.");
     }
   };
 
@@ -104,11 +117,13 @@ export default function HomePage() {
     }
     try {
       const response = await createPost(newPostContent);
-      setPosts([response, ...posts]);
+      setPosts([response, ...posts]); // Add new post to the beginning
       setNewPostContent("");
       setShowPostPopup(false);
+      alert("Post created successfully!");
     } catch (err) {
       console.error("Failed to create post:", err);
+      alert("Failed to create post. Please try again.");
     }
   };
 
@@ -118,12 +133,17 @@ export default function HomePage() {
       return;
     }
     try {
-      await addComment(postId, commentContent);
-      alert("Comment added!");
+      const newComment = await addComment(postId, commentContent);
+      setPostComments((prev) => ({
+        ...prev,
+        [postId]: [...(prev[postId] || []), newComment], // Append new comment
+      }));
       setCommentContent("");
       setActivePostId(null); // Close the comment box
+      alert("Comment added!");
     } catch (err) {
       console.error("Failed to add comment:", err);
+      alert("Failed to add comment. Please try again.");
     }
   };
 
@@ -154,10 +174,10 @@ export default function HomePage() {
         <div className="bg-white shadow rounded-lg p-6 mb-6">
           <div className="flex items-center space-x-6">
             <Image
-              src="https://via.placeholder.com/150"
+              src="https://via.placeholder.com/200"
               alt="Profile Picture"
-              width={150}
-              height={150}
+              width={200}
+              height={200}
               className="rounded-full"
             />
             <div>
@@ -173,13 +193,19 @@ export default function HomePage() {
         {/* Actions */}
         <div className="flex justify-between mb-6">
           <button
-            onClick={() => setShowFriendRequests(true) || fetchFriendRequests()}
+            onClick={() => {
+              setShowFriendRequests(true);
+              fetchFriendRequests();
+            }}
             className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
           >
             View Flow Requests
           </button>
           <button
-            onClick={() => setShowFriends(true) || fetchFriends()}
+            onClick={() => {
+              setShowFriends(true);
+              fetchFriends();
+            }}
             className="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600"
           >
             View Friends
@@ -194,48 +220,73 @@ export default function HomePage() {
 
         {/* Posts */}
         <div className="space-y-4">
-          {posts.map((post) => (
-            <div
-              key={post.id}
-              className="bg-white shadow rounded-lg p-4 flex flex-col space-y-2"
-            >
-              <h3 className="font-bold text-lg">{post.author}</h3>
-              <p>{post.content}</p>
-              
-              <div className="flex space-x-4 text-blue-500">
-                <button onClick={() => toggleLike(post.id)}>Like</button>
-                <button onClick={() => setActivePostId(post.id)}>Comment</button>
-                <button onClick={() => repost(post.id)}>Repost</button>
-                <button
-                  onClick={() => {
-                    setActivePostId(post.id);
-                    getComments(post.id);
-                  }}
-                >
-                  View Comments
-                </button>
-              </div>
+          {Array.isArray(posts) && posts.length > 0 ? (
+            posts.map((post) => (
+              <div
+                key={post.id}
+                className="bg-white shadow rounded-lg p-4 flex flex-col space-y-2"
+              >
+                <h3 className="font-bold text-lg">{post.author}</h3>
+                <p>{post.content}</p>
+                <p className="text-sm text-gray-500">
+                  {new Date(post.created_at).toLocaleString()}
+                </p>
 
-              {/* Comments */}
-              <div className="mt-2 space-y-2">
-                {postComment && postComment.map((comment) => (
-                  <p key={comment.id}>{comment.content}</p>
-                ))}
-              </div>
+                {/* Action Buttons */}
+                <div className="flex space-x-4 text-blue-500">
+                  <button onClick={() => toggleLike(post.id)}>Like</button>
+                  <button onClick={() => setActivePostId(post.id)}>Comment</button>
+                  <button onClick={() => repost(post.id)}>Repost</button>
+                  <button
+                    onClick={() => {
+                      setActivePostId(post.id);
+                      getComments(post.id);
+                    }}
+                  >
+                    View Comments
+                  </button>
+                </div>
 
-              {activePostId === post.id && postComment && Array.isArray(postComment) && postComment.length > 0 ? (
-                  postComment.map((comment) => (
-                    <div key={comment.id} className="p-2 border-b">
-                      <p>
-                        <strong>{comment.user.username}:</strong> {comment.content}
-                      </p>
-                    </div>
-                  ))
-                ) : (
-                  <p className="italic text-gray-500">No comments yet.</p>
+                {/* Comments Section */}
+                <div className="mt-2 space-y-2">
+                  {activePostId === post.id && postComments[post.id] ? (
+                    postComments[post.id].length > 0 ? (
+                      postComments[post.id].map((comment, index) => (
+                        <div key={index} className="p-2 border-b">
+                          <p>
+                            <strong>{comment.user.username}:</strong> {comment.content}
+                          </p>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="italic text-gray-500">No comments yet.</p>
+                    )
+                  ) : null}
+                </div>
+
+                {/* Add Comment Section */}
+                {activePostId === post.id && (
+                  <div className="mt-2">
+                    <textarea
+                      className="w-full p-2 border rounded-md"
+                      rows="2"
+                      value={commentContent}
+                      onChange={(e) => setCommentContent(e.target.value)}
+                      placeholder="Type your comment here..."
+                    ></textarea>
+                    <button
+                      onClick={() => handleAddComment(post.id)}
+                      className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mt-2"
+                    >
+                      Submit Comment
+                    </button>
+                  </div>
                 )}
-            </div>
-          ))}
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-500 italic">No posts available.</p>
+          )}
         </div>
       </div>
 
@@ -244,7 +295,7 @@ export default function HomePage() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
             <h2 className="text-xl font-bold mb-4">Friends List</h2>
-            {friends.length > 0 ? (
+            {Array.isArray(friends) && friends.length > 0 ? (
               friends.map((friend) => (
                 <div key={friend.id} className="flex justify-between items-center mb-4">
                   <p>{friend.user_name}</p>
@@ -268,7 +319,7 @@ export default function HomePage() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
             <h2 className="text-xl font-bold mb-4">Friend Requests</h2>
-            {friendRequests.length > 0 ? (
+            {Array.isArray(friendRequests) && friendRequests.length > 0 ? (
               friendRequests.map((request) => (
                 <div key={request.id} className="flex justify-between items-center mb-4">
                   <p>{request.sender}</p>
