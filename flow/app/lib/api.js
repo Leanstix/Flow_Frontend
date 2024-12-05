@@ -263,11 +263,6 @@ export const sendMessage = async (conversationId, content) => {
   }
 };
 
-/**
- * Fetch all messages in a conversation
- * @param {string} conversationId - Conversation ID
- * @returns {Promise} - Axios response with list of messages
- */
 export const fetchMessages = async (conversationId) => {
   try {
     const accessToken = localStorage.getItem("authToken");

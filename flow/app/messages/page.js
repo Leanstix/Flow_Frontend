@@ -1,5 +1,5 @@
 "use client";
-import { ChatComponent } from './components/messages';
+import ChatComponent from './components/messages';
 import { useState, useEffect } from "react";
 
 export default function Message() {
