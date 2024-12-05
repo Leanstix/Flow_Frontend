@@ -151,6 +151,10 @@ export const createPost = async (content) => {
 
 // ------------------------ Messaging API Calls ------------------------
 
+// ------------------------ Messaging API Calls ------------------------
+
+
+
 /**
  * Create a new conversation
  * @param {Array} participants - List of participant IDs
@@ -158,10 +162,19 @@ export const createPost = async (content) => {
  */
 export const createConversation = async (participants) => {
   try {
-    const response = await api.post('/conversations/', { participants });
+    const accessToken = localStorage.getItem("authToken");
+    const response = await api.post(
+      "/conversations/",
+      { participants },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
-    console.error('Error creating conversation:', error.response?.data || error.message);
+    console.error("Error creating conversation:", error.response?.data || error.message);
     throw error;
   }
 };
@@ -172,10 +185,15 @@ export const createConversation = async (participants) => {
  */
 export const fetchConversations = async () => {
   try {
-    const response = await api.get('/conversations/');
+    const accessToken = localStorage.getItem("authToken");
+    const response = await api.get("/conversations/", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
     return response.data;
   } catch (error) {
-    console.error('Error fetching conversations:', error.response?.data || error.message);
+    console.error("Error fetching conversations:", error.response?.data || error.message);
     throw error;
   }
 };
@@ -187,10 +205,15 @@ export const fetchConversations = async () => {
  */
 export const fetchConversation = async (conversationId) => {
   try {
-    const response = await api.get(`/conversations/${conversationId}/`);
+    const accessToken = localStorage.getItem("authToken");
+    const response = await api.get(`/conversations/${conversationId}/`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
     return response.data;
   } catch (error) {
-    console.error('Error fetching conversation:', error.response?.data || error.message);
+    console.error("Error fetching conversation:", error.response?.data || error.message);
     throw error;
   }
 };
@@ -202,10 +225,15 @@ export const fetchConversation = async (conversationId) => {
  */
 export const deleteConversation = async (conversationId) => {
   try {
-    const response = await api.delete(`/conversations/${conversationId}/`);
+    const accessToken = localStorage.getItem("authToken");
+    const response = await api.delete(`/conversations/${conversationId}/`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
     return response.data;
   } catch (error) {
-    console.error('Error deleting conversation:', error.response?.data || error.message);
+    console.error("Error deleting conversation:", error.response?.data || error.message);
     throw error;
   }
 };
@@ -218,10 +246,19 @@ export const deleteConversation = async (conversationId) => {
  */
 export const sendMessage = async (conversationId, content) => {
   try {
-    const response = await api.post('/messages/', { conversation: conversationId, content });
+    const accessToken = localStorage.getItem("authToken");
+    const response = await api.post(
+      "/messages/",
+      { conversation: conversationId, content },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
-    console.error('Error sending message:', error.response?.data || error.message);
+    console.error("Error sending message:", error.response?.data || error.message);
     throw error;
   }
 };
@@ -233,10 +270,15 @@ export const sendMessage = async (conversationId, content) => {
  */
 export const fetchMessages = async (conversationId) => {
   try {
-    const response = await api.get(`/conversations/${conversationId}/messages/`);
+    const accessToken = localStorage.getItem("authToken");
+    const response = await api.get(`/conversations/${conversationId}/messages/`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
     return response.data;
   } catch (error) {
-    console.error('Error fetching messages:', error.response?.data || error.message);
+    console.error("Error fetching messages:", error.response?.data || error.message);
     throw error;
   }
 };
@@ -248,13 +290,23 @@ export const fetchMessages = async (conversationId) => {
  */
 export const markMessageAsRead = async (messageId) => {
   try {
-    const response = await api.patch(`/messages/${messageId}/`, { is_read: true });
+    const accessToken = localStorage.getItem("authToken");
+    const response = await api.patch(
+      `/messages/${messageId}/`,
+      { is_read: true },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
-    console.error('Error marking message as read:', error.response?.data || error.message);
+    console.error("Error marking message as read:", error.response?.data || error.message);
     throw error;
   }
 };
+
 
 
 // -----------------Send flow request -------------------

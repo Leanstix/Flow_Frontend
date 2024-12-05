@@ -1,8 +1,5 @@
 "use client";
-import { ConversationList } from './components/ConversationList';
-import { Conversation } from './components/Conversation';
-import { CreateConversation } from './components/CreateConversation';
-import { MessageItem } from './components/MessageItem';
+import { ChatComponent } from './components/messages';
 import { useState, useEffect } from "react";
 
 export default function Message() {
@@ -16,10 +13,7 @@ export default function Message() {
 
     return(
         <div>
-            <Conversation />
-            <ConversationList />
-            <CreateConversation />
-            <MessageItem />
+            <ChatComponent />
         </div>
     )
 }

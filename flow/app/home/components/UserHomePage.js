@@ -12,18 +12,21 @@ import {
   reportPost,
   acceptFriendRequest,
   getFriendRequests,
-  getFriends, // API to fetch friends
+  getFriends,
   fetchComments,
+  sendMessage,
+  createConversation,
 } from "@/app/lib/api";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-//import { comment } from "postcss";
 
 export default function HomePage() {
+  const [messageContent, setMessageContent] = useState("");
+  const [selectedFriendId, setSelectedFriendId] = useState(null);
   const [userData, setUserData] = useState(null);
   const [newPostContent, setNewPostContent] = useState("");
   const [posts, setPosts] = useState([]);
-  const [postComments, setPostComments] = useState({}); // Stores comments per post
+  const [postComments, setPostComments] = useState({});
   const [showPostPopup, setShowPostPopup] = useState(false);
   const [friendRequests, setFriendRequests] = useState([]);
   const [showFriendRequests, setShowFriendRequests] = useState(false);
@@ -51,10 +54,27 @@ export default function HomePage() {
     }
   };
 
+  const handleSendMessage = async (friendId) => {
+    if (!messageContent.trim()) {
+      alert("Message content cannot be empty!");
+      return;
+    }
+    try {
+      const conversation = await createConversation([friendId, userData.user_id]);
+      console.log("Conversation created:", conversation);
+      const message = await sendMessage(conversation.id, messageContent);
+      alert("Message sent!");
+      setMessageContent("");
+      setSelectedFriendId(null);
+    } catch (error) {
+      console.error("Failed to send message:", error);
+      alert("Failed to send message. Please try again.");
+    }
+  };
+
   const getComments = async (postId) => {
     try {
       const response = await fetchComments(postId);
-      //console.log( "the response stored is",response.results)
       setPostComments((prev) => ({
         ...prev,
         [postId]: response.results,
@@ -99,17 +119,6 @@ export default function HomePage() {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      Cookies.remove("user_data");
-      router.push("/login");
-    } catch (err) {
-      console.error("Logout failed:", err);
-      alert("Logout failed. Please try again.");
-    }
-  };
-
   const handleCreatePost = async () => {
     if (!newPostContent.trim()) {
       alert("Post content cannot be empty!");
@@ -117,7 +126,7 @@ export default function HomePage() {
     }
     try {
       const response = await createPost(newPostContent);
-      setPosts([response, ...posts]); // Add new post to the beginning
+      setPosts([response, ...posts]);
       setNewPostContent("");
       setShowPostPopup(false);
       alert("Post created successfully!");
@@ -136,15 +145,30 @@ export default function HomePage() {
       const newComment = await addComment(postId, commentContent);
       setPostComments((prev) => ({
         ...prev,
-        [postId]: [...(prev[postId] || []), newComment], // Append new comment
+        [postId]: [...(prev[postId] || []), newComment],
       }));
       setCommentContent("");
-      setActivePostId(null); // Close the comment box
+      setActivePostId(null);
       alert("Comment added!");
     } catch (err) {
       console.error("Failed to add comment:", err);
       alert("Failed to add comment. Please try again.");
     }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      Cookies.remove("user_data");
+      router.push("/login");
+    } catch (err) {
+      console.error("Logout failed:", err);
+      alert("Logout failed. Please try again.");
+    }
+  };
+
+  const openMessageModal = (friendId) => {
+    setSelectedFriendId(friendId);
   };
 
   if (!userData) {
@@ -296,10 +320,19 @@ export default function HomePage() {
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
             <h2 className="text-xl font-bold mb-4">Friends List</h2>
             {Array.isArray(friends) && friends.length > 0 ? (
-              friends.map((friend) => (
-                <div key={friend.id} className="flex justify-between items-center mb-4">
-                  <p>{friend.user_name}</p>
+              friends.map((friend, index) => (
+                <div key={index} className="grid grid-cols-2">
+                  <div className="flex justify-between items-center mb-4">
+                    <p>{friend.user_name}</p>
+                    <button
+                      onClick={() => openMessageModal(friend.id)}
+                      className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                    >
+                      Message
+                    </button>
+                  </div>
                 </div>
+                
               ))
             ) : (
               <p>No friends found.</p>
@@ -344,6 +377,35 @@ export default function HomePage() {
         </div>
       )}
 
+      {selectedFriendId && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+              <h2 className="text-xl font-bold mb-4">Send a Message</h2>
+              <textarea
+                className="w-full p-2 border rounded-md"
+                rows="4"
+                value={messageContent}
+                onChange={(e) => setMessageContent(e.target.value)}
+                placeholder="Type your message here..."
+              ></textarea>
+              <div className="flex justify-between items-center mt-4">
+                <button
+                  onClick={() => handleSendMessage(selectedFriendId)}
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                >
+                  Send
+                </button>
+                <button
+                  onClick={() => setSelectedFriendId(null)}
+                  className="bg-gray-300 px-4 py-2 rounded-md hover:bg-gray-400"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
       {/* New Post Modal */}
       {showPostPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -375,4 +437,4 @@ export default function HomePage() {
       )}
     </div>
   );
-}
+};
