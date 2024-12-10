@@ -96,18 +96,37 @@ export const signUp = async (userData) => {
  * @param {Object} formData - User profile data
  * @returns {Promise} - Axios response with updated profile data
  */
+export const UserProfileUpdate = async (formData) => {
+  try {
+    const access_token = localStorage.getItem('authToken');
+    const config = {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+    
+    // Ensure the form data is JSON-formatted, as required by the API
+    const response = await api.put('/profile/update/', formData, config);
+    return response.data;
+  } catch (error) {
+    console.error('Profile Update error:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
 export const updateUserProfile = async (formData) => {
   try {
     const access_token = localStorage.getItem('authToken');
     const config = {
       headers: {
         Authorization: `Bearer ${access_token}`,
-        'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
       },
     };
     
     // Ensure the form data is JSON-formatted, as required by the API
-    const response = await api.put('/profile/update/', formData, config);
+    const response = await api.patch('/profile/update/', formData, config);
     return response.data;
   } catch (error) {
     console.error('Profile Update error:', error.response?.data || error.message);
@@ -150,10 +169,6 @@ export const createPost = async (content) => {
 };
 
 // ------------------------ Messaging API Calls ------------------------
-
-// ------------------------ Messaging API Calls ------------------------
-
-
 
 /**
  * Create a new conversation

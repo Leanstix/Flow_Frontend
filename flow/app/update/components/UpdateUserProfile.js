@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { UserProfileUpdate } from '../../lib/api'; // Ensure correct path for api.js import
+import { updateUserProfile } from '../../lib/api'; // Ensure correct path for api.js import
 
-const UserProfile = () => {
+const UpdateUserProfile = () => {
   const router = useRouter();
   const [profileData, setProfileData] = useState({
     user_name: '', // Added user_name
@@ -45,8 +45,8 @@ const UserProfile = () => {
     });
 
     try {
-      // Making a PUT request using UserProfileUpdate from api.js
-      await UserProfileUpdate(formData);
+      // Making a PUT request using updateUserProfile from api.js
+      await updateUserProfile(formData);
       router.push('/home'); // Redirect to profile page after successful update
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -186,4 +186,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default UpdateUserProfile;

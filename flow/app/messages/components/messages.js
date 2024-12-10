@@ -28,6 +28,7 @@ export default function ChatComponent() {
     const loadMessages = async () => {
       try {
         const data = await fetchMessages(selectedConversationId);
+        console.log(data)
         setMessages(data || []); // Ensure it's always an array
       } catch (error) {
         console.error('Error loading messages:', error.response?.data || error.message);
@@ -95,7 +96,7 @@ export default function ChatComponent() {
               <button className="bg-pink-400 text-white py-2 px-4 rounded-lg">
                 Attachment
               </button>
-              <input
+              <textarea
                 type="text"
                 placeholder="Enter message"
                 className="border rounded-lg flex-1 p-2"

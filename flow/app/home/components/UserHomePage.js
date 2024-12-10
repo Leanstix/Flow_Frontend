@@ -175,7 +175,7 @@ export default function HomePage() {
     return <div>Loading...</div>;
   }
 
-  const { first_name, last_name, email, bio } = userData;
+  const { first_name, last_name, email, bio, profile_picture } = userData;
 
   return (
     <div className="bg-gray-100 min-h-screen">
@@ -198,7 +198,7 @@ export default function HomePage() {
         <div className="bg-white shadow rounded-lg p-6 mb-6">
           <div className="flex items-center space-x-6">
             <Image
-              src="https://via.placeholder.com/200"
+              src={`http://127.0.0.1:8000${profile_picture}`}
               alt="Profile Picture"
               width={200}
               height={200}

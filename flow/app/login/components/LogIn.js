@@ -32,7 +32,7 @@ export default function LoginComponent() {
         ...extraContents
       } = response;
   
-      console.log("Login response:", response);
+      //console.log("Login response:", response);
   
       const additionalFieldsExist = Object.keys(extraContents).length > 0;
   
