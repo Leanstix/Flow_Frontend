@@ -16,11 +16,13 @@ import {
   fetchComments,
   sendMessage,
   createConversation,
+  searchPostsByUser,
 } from "@/app/lib/api";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 export default function HomePage() {
+  const [searchQuery, setSearchQuery] = useState('');
   const [messageContent, setMessageContent] = useState("");
   const [selectedFriendId, setSelectedFriendId] = useState(null);
   const [userData, setUserData] = useState(null);
@@ -53,6 +55,21 @@ export default function HomePage() {
       console.error("Failed to fetch posts:", err);
     }
   };
+
+  const getUserPosts = async () => {
+    try {
+      const response = await searchPostsByUser(searchQuery)
+      setPosts(response)
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
+  const handleInputChange = (e) => {
+    setSearchQuery(e.target.value);
+    getUserPosts()
+  };
+
 
   const handleSendMessage = async (friendId) => {
     if (!messageContent.trim()) {
@@ -244,6 +261,13 @@ export default function HomePage() {
 
         {/* Posts */}
         <div className="space-y-4">
+          <input
+            type="text"
+            placeholder="Search your posts..."
+            value={searchQuery}
+            onChange={handleInputChange}
+            style={{ marginBottom: '10px', padding: '5px', width: '100%' }}
+          />
           {Array.isArray(posts) && posts.length > 0 ? (
             posts.map((post) => (
               <div

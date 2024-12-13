@@ -485,3 +485,37 @@ export const reportPost = async (postId) => {
     throw error;
   }
 };
+
+// -----------------Search posts not created by the authorized user ---------------------
+
+export const searchPostsNotByUser = async (query) => {
+  try {
+    const accessToken = localStorage.getItem('authToken');
+    if (!accessToken) {
+      throw new Error('User is not authenticated. Token missing.');
+    }
+    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
+    const response = await api.get('/posts/search/not-by-user/', { params: { q: query }, ...config });
+    return response.data;
+  } catch (error) {
+    console.error('Error searching posts not created by the user:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// -----------------Search posts created by the authorized user ---------------------
+
+export const searchPostsByUser = async (query) => {
+  try {
+    const accessToken = localStorage.getItem('authToken');
+    if (!accessToken) {
+      throw new Error('User is not authenticated. Token missing.');
+    }
+    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
+    const response = await api.get('/posts/search/by-user/', { params: { q: query }, ...config });
+    return response.data;
+  } catch (error) {
+    console.error('Error searching posts created by the user:', error.response?.data || error.message);
+    throw error;
+  }
+};
