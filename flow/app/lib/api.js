@@ -487,35 +487,55 @@ export const reportPost = async (postId) => {
 };
 
 // -----------------Search posts not created by the authorized user ---------------------
-
-export const searchPostsNotByUser = async (query) => {
+export const searchPostsNotByUser = async (query, page = 1, limit = 10) => {
   try {
-    const accessToken = localStorage.getItem('authToken');
+    const accessToken = localStorage.getItem("authToken");
     if (!accessToken) {
-      throw new Error('User is not authenticated. Token missing.');
+      throw new Error("User is not authenticated. Token missing.");
     }
-    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
-    const response = await api.get('/posts/search/not-by-user/', { params: { q: query }, ...config });
-    return response.data;
+
+    const config = {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    };
+
+    const response = await api.get("/posts/search/not-by-user/", {
+      params: { q: query, page, limit }, // Include pagination params
+      ...config,
+    });
+
+    return response.data; // Backend should return paginated response with metadata
   } catch (error) {
-    console.error('Error searching posts not created by the user:', error.response?.data || error.message);
+    console.error(
+      "Error searching posts not created by the user:",
+      error.response?.data || error.message
+    );
     throw error;
   }
 };
 
 // -----------------Search posts created by the authorized user ---------------------
-
-export const searchPostsByUser = async (query) => {
+export const searchPostsByUser = async (query, page = 1, limit = 10) => {
   try {
-    const accessToken = localStorage.getItem('authToken');
+    const accessToken = localStorage.getItem("authToken");
     if (!accessToken) {
-      throw new Error('User is not authenticated. Token missing.');
+      throw new Error("User is not authenticated. Token missing.");
     }
-    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
-    const response = await api.get('/posts/search/by-user/', { params: { q: query }, ...config });
-    return response.data;
+
+    const config = {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    };
+
+    const response = await api.get("/posts/search/by-user/", {
+      params: { q: query, page, limit }, // Include pagination params
+      ...config,
+    });
+
+    return response.data; // Backend should return paginated response with metadata
   } catch (error) {
-    console.error('Error searching posts created by the user:', error.response?.data || error.message);
+    console.error(
+      "Error searching posts created by the user:",
+      error.response?.data || error.message
+    );
     throw error;
   }
 };

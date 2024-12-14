@@ -22,7 +22,8 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 export default function HomePage() {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("");
   const [messageContent, setMessageContent] = useState("");
   const [selectedFriendId, setSelectedFriendId] = useState(null);
   const [userData, setUserData] = useState(null);
@@ -36,6 +37,8 @@ export default function HomePage() {
   const [showFriends, setShowFriends] = useState(false);
   const [activePostId, setActivePostId] = useState(null);
   const [commentContent, setCommentContent] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
   const router = useRouter();
 
@@ -56,14 +59,29 @@ export default function HomePage() {
     }
   };
 
-  const getUserPosts = async () => {
+  const getUserPosts = async (page = 1) => {
     try {
-      const response = await searchPostsByUser(searchQuery)
-      setPosts(response)
+      setLoading(true); // Show loading indicator
+      const response = await searchPostsByUser(searchQuery, page);
+      
+      if (page === 1) {
+        // Replace posts if it's the first page or a new search query
+        setPosts(response.results);
+      } else {
+        // Append new posts for additional pages
+        setPosts((prevPosts) => [...prevPosts, ...response.results]);
+      }
+  
+      setHasMore(!!response.next); // Check if there's a next page
+      setCurrentPage(page); // Update the current page
     } catch (err) {
-      setError(err.message);
+      console.error("Error fetching user posts:", err.message);
+      setError(err.message); // Set error state
+    } finally {
+      setLoading(false); // Hide loading indicator
     }
-  }
+  };
+  
 
   const handleInputChange = (e) => {
     setSearchQuery(e.target.value);
@@ -186,6 +204,12 @@ export default function HomePage() {
 
   const openMessageModal = (friendId) => {
     setSelectedFriendId(friendId);
+  };
+
+  const loadMorePosts = () => {
+    if (hasMore && !loading) {
+      getUserPosts(currentPage + 1);
+    }
   };
 
   if (!userData) {
