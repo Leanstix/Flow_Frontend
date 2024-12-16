@@ -16,6 +16,7 @@ export const login = async (email, password) => {
     }
     localStorage.setItem('authToken', response.data.access);
     localStorage.setItem('refreshToken', response.data.refresh);
+    console.log(response)
     return response.data;
   } catch (error) {
     console.error('Login error:', error.response?.data || error.message);
@@ -514,7 +515,7 @@ export const searchPostsNotByUser = async (query, page = 1, limit = 10) => {
 };
 
 // -----------------Search posts created by the authorized user ---------------------
-export const searchPostsByUser = async (query, page = 1, limit = 10) => {
+export const searchPostsByUser = async (query = "", page = 1, limit = 10) => {
   try {
     const accessToken = localStorage.getItem("authToken");
     if (!accessToken) {
@@ -526,11 +527,11 @@ export const searchPostsByUser = async (query, page = 1, limit = 10) => {
     };
 
     const response = await api.get("/posts/search/by-user/", {
-      params: { q: query, page, limit }, // Include pagination params
+      params: { q: query.trim(), page, limit }, // Ensure query is trimmed
       ...config,
     });
 
-    return response.data; // Backend should return paginated response with metadata
+    return response.data; // Return paginated response
   } catch (error) {
     console.error(
       "Error searching posts created by the user:",

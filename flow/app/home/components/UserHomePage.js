@@ -59,26 +59,17 @@ export default function HomePage() {
     }
   };
 
-  const getUserPosts = async (page = 1) => {
+  const getUserPosts = async () => {
     try {
       setLoading(true); // Show loading indicator
-      const response = await searchPostsByUser(searchQuery, page);
+      const response = await searchPostsByUser(searchQuery);
       
-      if (page === 1) {
-        // Replace posts if it's the first page or a new search query
-        setPosts(response.results);
-      } else {
-        // Append new posts for additional pages
-        setPosts((prevPosts) => [...prevPosts, ...response.results]);
-      }
-  
-      setHasMore(!!response.next); // Check if there's a next page
-      setCurrentPage(page); // Update the current page
+     setPosts(response.data)
     } catch (err) {
       console.error("Error fetching user posts:", err.message);
       setError(err.message); // Set error state
     } finally {
-      setLoading(false); // Hide loading indicator
+      setLoading(false); // 
     }
   };
   
