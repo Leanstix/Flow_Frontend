@@ -540,3 +540,116 @@ export const searchPostsByUser = async (query = "", page = 1, limit = 10) => {
     throw error;
   }
 };
+
+//---------------------- Fetch All Advertisements --------------------
+export const fetchAdvertisements = async () => {
+  try {
+    const accessToken = localStorage.getItem('authToken');
+    if (!accessToken) {
+      throw new Error('User is not authenticated. Token missing.');
+    }
+    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
+    const response = await api.get('/advertisements/', config);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching advertisements:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+//---------------------- Create Advertisement --------------------
+export const createAdvertisement = async (advertisementData) => {
+  try {
+    const accessToken = localStorage.getItem('authToken');
+    if (!accessToken) {
+      throw new Error('User is not authenticated. Token missing.');
+    }
+    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
+    const response = await api.post('/advertisements/', advertisementData, config);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating advertisement:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+//---------------------- Fetch Advertisement Details --------------------
+export const fetchAdvertisementDetails = async (adId) => {
+  try {
+    const accessToken = localStorage.getItem('authToken');
+    if (!accessToken) {
+      throw new Error('User is not authenticated. Token missing.');
+    }
+    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
+    const response = await api.get(`/advertisements/${adId}/`, config);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching advertisement details:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+//---------------------- Send Message to Seller --------------------
+export const sendMessageToSeller = async (adId, messageData) => {
+  try {
+    const accessToken = localStorage.getItem('authToken');
+    if (!accessToken) {
+      throw new Error('User is not authenticated. Token missing.');
+    }
+    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
+    const response = await api.post(`/advertisements/${adId}/message/`, messageData, config);
+    return response.data;
+  } catch (error) {
+    console.error('Error sending message to seller:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+//---------------------- Fetch Seller Messages --------------------
+export const fetchSellerMessages = async (adId) => {
+  try {
+    const accessToken = localStorage.getItem('authToken');
+    if (!accessToken) {
+      throw new Error('User is not authenticated. Token missing.');
+    }
+    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
+    const response = await api.get(`/advertisements/${adId}/messages/`, config);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching seller messages:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+//---------------------- Reply to Customer Message --------------------
+export const replyToCustomerMessage = async (adId, messageId, replyData) => {
+  try {
+    const accessToken = localStorage.getItem('authToken');
+    if (!accessToken) {
+      throw new Error('User is not authenticated. Token missing.');
+    }
+    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
+    const response = await api.post(`/advertisements/${adId}/messages/${messageId}/reply/`, replyData, config);
+    return response.data;
+  } catch (error) {
+    console.error('Error replying to customer message:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+//---------------------- Fetch Replies for Customer --------------------
+export const fetchRepliesForCustomer = async (adId) => {
+  try {
+    const accessToken = localStorage.getItem('authToken');
+    if (!accessToken) {
+      throw new Error('User is not authenticated. Token missing.');
+    }
+    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
+    const response = await api.get(`/advertisements/${adId}/messages/replies/`, config);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching replies for customer:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
