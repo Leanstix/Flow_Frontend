@@ -549,7 +549,7 @@ export const fetchAdvertisements = async () => {
       throw new Error('User is not authenticated. Token missing.');
     }
     const config = { headers: { Authorization: `Bearer ${accessToken}` } };
-    const response = await api.get('/advertisements/', config);
+    const response = await api.get('/adds/', config);
     return response.data;
   } catch (error) {
     console.error('Error fetching advertisements:', error.response?.data || error.message);
@@ -565,7 +565,7 @@ export const createAdvertisement = async (advertisementData) => {
       throw new Error('User is not authenticated. Token missing.');
     }
     const config = { headers: { Authorization: `Bearer ${accessToken}` } };
-    const response = await api.post('/advertisements/', advertisementData, config);
+    const response = await api.post('/adds/create/', advertisementData, config);
     return response.data;
   } catch (error) {
     console.error('Error creating advertisement:', error.response?.data || error.message);
@@ -581,7 +581,7 @@ export const fetchAdvertisementDetails = async (adId) => {
       throw new Error('User is not authenticated. Token missing.');
     }
     const config = { headers: { Authorization: `Bearer ${accessToken}` } };
-    const response = await api.get(`/advertisements/${adId}/`, config);
+    const response = await api.get(`/adds/${adId}/`, config);
     return response.data;
   } catch (error) {
     console.error('Error fetching advertisement details:', error.response?.data || error.message);
@@ -645,11 +645,10 @@ export const fetchRepliesForCustomer = async (adId) => {
       throw new Error('User is not authenticated. Token missing.');
     }
     const config = { headers: { Authorization: `Bearer ${accessToken}` } };
-    const response = await api.get(`/advertisements/${adId}/messages/replies/`, config);
+    const response = await api.get(`/adds/${adId}/messages/replies/`, config);
     return response.data;
   } catch (error) {
     console.error('Error fetching replies for customer:', error.response?.data || error.message);
     throw error;
   }
 };
-
