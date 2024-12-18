@@ -127,7 +127,7 @@ export default function Marketplace() {
 
       {/* Main Content */}
       <main className="container mx-auto p-4 flex-grow">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-black">
           {advertisements.map((ad) => (
             <div key={ad.id} className="bg-white shadow-md rounded-md overflow-hidden">
               <Image
