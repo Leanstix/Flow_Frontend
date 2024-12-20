@@ -49,9 +49,9 @@ export default function LoginComponent() {
           const cookieData = Cookies.get("user_data");
           if (cookieData) {
             const parsedData = JSON.parse(cookieData); // Parse the cookie data
-            const { user_name } = parsedData; // Extract user_name
+            const { university_id } = parsedData; // Extract user_name
             setUserData(parsedData); // Set the full user data
-            router.push(`/${user_name}`); // Dynamically navigate to the user_name route
+            router.push(`/${university_id}`); // Dynamically navigate to the user_name route
           }
         }
       } else {
