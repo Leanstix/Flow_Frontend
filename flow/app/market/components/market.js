@@ -13,9 +13,10 @@ export default function Marketplace() {
   const [advertisements, setAdvertisements] = useState([]);
   const [selectedAd, setSelectedAd] = useState(null);
   const [isAdDetailsModalOpen, setIsAdDetailsModalOpen] = useState(false);
+  const [selectedAdId, setSelectedAdId] = useState(null);
   const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
   const [isAdModalOpen, setIsAdModalOpen] = useState(false);
-  const [sellerEmail, setSellerEmail] = useState("");
+  //const [sellerEmail, setSellerEmail] = useState("");
   const [message, setMessage] = useState("");
   const [adData, setAdData] = useState({ title: "", description: "", price: "", imageURL: "" });
   const [isMounted, setIsMounted] = useState(false);
@@ -40,7 +41,7 @@ export default function Marketplace() {
   const openAdDetails = async (adId) => {
     try {
       const adDetails = await fetchAdvertisementDetails(adId);
-      setSelectedAd(adDetails);
+      setSelectedAd(adDetails.id);
       setIsAdDetailsModalOpen(true);
     } catch (error) {
       console.error("Error fetching advertisement details:", error);
@@ -53,8 +54,8 @@ export default function Marketplace() {
   };
 
   // Open and close message modal
-  const openMessageModal = (email) => {
-    setSellerEmail(email);
+  const openMessageModal = (adId) => {
+    setSelectedAdId(adId);
     setIsMessageModalOpen(true);
   };
   const closeMessageModal = () => {
@@ -81,7 +82,12 @@ export default function Marketplace() {
     e.preventDefault();
     try {
       const messageData = { message };
-      await sendMessageToSeller(selectedAd?.id, messageData);
+      const Message = {
+        advertisement_id: selectedAdId,
+        content : messageData
+      }
+      console.log(Message)
+      await sendMessageToSeller(Message);
       alert("Message sent successfully!");
       closeMessageModal();
     } catch (error) {
@@ -153,7 +159,7 @@ export default function Marketplace() {
                 </button>
                 <button
                   className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md"
-                  onClick={() => openMessageModal(ad.seller_email)}
+                  onClick={() => openMessageModal(ad.id)}
                 >
                   Message Seller
                 </button>

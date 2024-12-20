@@ -590,14 +590,14 @@ export const fetchAdvertisementDetails = async (adId) => {
 };
 
 //---------------------- Send Message to Seller --------------------
-export const sendMessageToSeller = async (adId, messageData) => {
+export const sendMessageToSeller = async (messageData) => {
   try {
     const accessToken = localStorage.getItem('authToken');
     if (!accessToken) {
       throw new Error('User is not authenticated. Token missing.');
     }
     const config = { headers: { Authorization: `Bearer ${accessToken}` } };
-    const response = await api.post(`/advertisements/${adId}/message/`, messageData, config);
+    const response = await api.post(`/adds/messages/send/`, messageData, config);
     return response.data;
   } catch (error) {
     console.error('Error sending message to seller:', error.response?.data || error.message);
