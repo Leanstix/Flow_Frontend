@@ -5,6 +5,7 @@ import { login } from "../../lib/api"; // Ensure this path is correct
 import Cookies from "js-cookie"; // Import js-cookie library
 
 export default function LoginComponent() {
+  const [userData, setUserData] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
@@ -42,9 +43,17 @@ export default function LoginComponent() {
         secure: true,
         sameSite: "strict",
       });
-  
+
       if (additionalFieldsExist) {
-        if (mounted) router.push("/home");
+        if (mounted) {
+          const cookieData = Cookies.get("user_data");
+          if (cookieData) {
+            const parsedData = JSON.parse(cookieData); // Parse the cookie data
+            const { user_name } = parsedData; // Extract user_name
+            setUserData(parsedData); // Set the full user data
+            router.push(`/${user_name}`); // Dynamically navigate to the user_name route
+          }
+        }
       } else {
         if (mounted) router.push("/user-info");
       }
