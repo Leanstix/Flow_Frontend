@@ -22,7 +22,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 export default function HomePage() {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [messageContent, setMessageContent] = useState("");
   const [selectedFriendId, setSelectedFriendId] = useState(null);

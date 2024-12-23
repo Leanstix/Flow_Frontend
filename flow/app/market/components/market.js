@@ -8,6 +8,7 @@ import {
   sendMessageToSeller,
   createAdvertisement,
 } from "@/app/lib/api"; // Import API functions
+import { useRouter } from "next/navigation";
 
 export default function Marketplace() {
   const [advertisements, setAdvertisements] = useState([]);
@@ -20,6 +21,7 @@ export default function Marketplace() {
   const [message, setMessage] = useState("");
   const [adData, setAdData] = useState({ title: "", description: "", price: "", imageURL: "" });
   const [isMounted, setIsMounted] = useState(false);
+  const router = useRouter();
 
   // Ensure client-side rendering
   useEffect(() => {
@@ -40,11 +42,11 @@ export default function Marketplace() {
   // Open advertisement details modal
   const openAdDetails = async (adId) => {
     try {
-      const adDetails = await fetchAdvertisementDetails(adId);
-      setSelectedAd(adDetails.id);
-      setIsAdDetailsModalOpen(true);
+        const adDetails = await fetchAdvertisementDetails(adId);
+        setSelectedAd(adDetails); // Set the entire object
+        setIsAdDetailsModalOpen(true);
     } catch (error) {
-      console.error("Error fetching advertisement details:", error);
+        console.error("Error fetching advertisement details:", error);
     }
   };
 
@@ -55,7 +57,7 @@ export default function Marketplace() {
 
   // Open and close message modal
   const openMessageModal = (adId) => {
-    setSelectedAdId(adId);
+    setSelectedAdId(adId); // Correctly set the advertisement ID
     setIsMessageModalOpen(true);
   };
   const closeMessageModal = () => {
@@ -80,20 +82,26 @@ export default function Marketplace() {
   // Handle sending a message
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    try {
-      const messageData = { message };
-      const Message = {
-        advertisement_id: selectedAdId,
-        content : messageData
-      }
-      console.log(Message)
-      await sendMessageToSeller(Message);
-      alert("Message sent successfully!");
-      closeMessageModal();
-    } catch (error) {
-      console.error("Failed to send message:", error);
+    if (!selectedAdId) {
+        console.error("No advertisement ID selected.");
+        return;
     }
-  };
+    try {
+        const messageData = { message };
+        const Message = {
+            advertisement_id: selectedAdId,
+            content: messageData.message
+        };
+        console.log(Message);
+        await sendMessageToSeller(Message);
+        alert("Message sent successfully!");
+        router.push(`/market/${id}`); // Use the correct ID
+        closeMessageModal();
+    } catch (error) {
+        console.error("Failed to send message:", error);
+    }
+};
+
 
   // Handle creating a new advertisement
   const handleCreateAd = async (e) => {

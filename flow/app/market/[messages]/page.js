@@ -1,10 +1,10 @@
 "use client"
 
-import Marketplace from "./components/market";
+import Message from "./components/mesage";
 import { useState, useEffect } from "react";
-import ErrorBoundary from "../lib/ErrorBoundary";
+import ErrorBoundary from "@/app/lib/ErrorBoundary";
 
-export default function Market() {
+export default function Page() {
     const [IsMounted, SetIsMounted] = useState(false);
 
     useEffect(() => {
@@ -16,7 +16,7 @@ export default function Market() {
     return(
         <div>
             <ErrorBoundary>
-                <Marketplace />
+                <Message />
             </ErrorBoundary>
         </div>
     )

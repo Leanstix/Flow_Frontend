@@ -606,14 +606,14 @@ export const sendMessageToSeller = async (messageData) => {
 };
 
 //---------------------- Fetch Seller Messages --------------------
-export const fetchSellerMessages = async (adId) => {
+export const fetchSellerMessages = async () => {
   try {
     const accessToken = localStorage.getItem('authToken');
     if (!accessToken) {
       throw new Error('User is not authenticated. Token missing.');
     }
     const config = { headers: { Authorization: `Bearer ${accessToken}` } };
-    const response = await api.get(`/advertisements/${adId}/messages/`, config);
+    const response = await api.get(`/adds/messages/seller/`, config);
     return response.data;
   } catch (error) {
     console.error('Error fetching seller messages:', error.response?.data || error.message);
@@ -621,15 +621,31 @@ export const fetchSellerMessages = async (adId) => {
   }
 };
 
-//---------------------- Reply to Customer Message --------------------
-export const replyToCustomerMessage = async (adId, messageId, replyData) => {
+//---------------------- Fetch Customer Messages --------------------
+export const fetchCustomerMessages = async () => {
   try {
     const accessToken = localStorage.getItem('authToken');
     if (!accessToken) {
       throw new Error('User is not authenticated. Token missing.');
     }
     const config = { headers: { Authorization: `Bearer ${accessToken}` } };
-    const response = await api.post(`/advertisements/${adId}/messages/${messageId}/reply/`, replyData, config);
+    const response = await api.get(`/adds/messages/customer/`, config);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching customer messages:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+//---------------------- Reply to Message --------------------
+export const replyMessage = async (replyData) => {
+  try {
+    const accessToken = localStorage.getItem('authToken');
+    if (!accessToken) {
+      throw new Error('User is not authenticated. Token missing.');
+    }
+    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
+    const response = await api.post(`/adds/messages/reply/`, replyData, config);
     return response.data;
   } catch (error) {
     console.error('Error replying to customer message:', error.response?.data || error.message);
