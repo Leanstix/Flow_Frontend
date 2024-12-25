@@ -29,6 +29,7 @@ export const login = async (email, password) => {
 export const logout = async () => {
   try {
     const refreshToken = localStorage.getItem('refreshToken');
+    console.log(refreshToken)
     if (!refreshToken) {
       throw new Error('No refresh token found.');
     }
