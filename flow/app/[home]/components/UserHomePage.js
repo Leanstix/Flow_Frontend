@@ -80,15 +80,14 @@ export default function HomePage() {
   };
 
 
-  const handleSendMessage = async (friendId) => {
+  const handleSendMessage = async (ConversationId) => {
     if (!messageContent.trim()) {
       alert("Message content cannot be empty!");
       return;
     }
     try {
-      const conversation = await createConversation([friendId, userData.user_id]);
-      console.log("Conversation created:", conversation);
-      const message = await sendMessage(conversation.id, messageContent);
+      const conversation = ConversationId
+      const message = await sendMessage(conversation, messageContent);
       alert("Message sent!");
       setMessageContent("");
       setSelectedFriendId(null);
@@ -139,6 +138,8 @@ export default function HomePage() {
       await acceptFriendRequest(requestId);
       setFriendRequests((prev) => prev.filter((req) => req.id !== requestId));
       alert("Friend request accepted!");
+      //const conversation = await createConversation([friendId, userData.user_id]);
+      //console.log("Conversation created:", conversation);
     } catch (err) {
       console.error("Error accepting friend request:", err);
       alert("Failed to accept friend request. Please try again.");
@@ -364,7 +365,7 @@ export default function HomePage() {
                   <div className="flex justify-between items-center mb-4">
                     <p>{friend.user_name}</p>
                     <button
-                      onClick={() => openMessageModal(friend.id)}
+                      onClick={() => openMessageModal(friend.conversation_id)}
                       className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
                     >
                       Message
