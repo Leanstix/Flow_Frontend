@@ -135,11 +135,12 @@ export default function HomePage() {
 
   const handleAcceptRequest = async (requestId) => {
     try {
-      await acceptFriendRequest(requestId);
+      const response = await acceptFriendRequest(requestId);
       setFriendRequests((prev) => prev.filter((req) => req.id !== requestId));
+      console.log(response)
       alert("Friend request accepted!");
-      //const conversation = await createConversation([friendId, userData.user_id]);
-      //console.log("Conversation created:", conversation);
+      const conversation = await createConversation([response.data.from_user_id, userData.user_id]);
+      console.log("Conversation created:", conversation);
     } catch (err) {
       console.error("Error accepting friend request:", err);
       alert("Failed to accept friend request. Please try again.");
