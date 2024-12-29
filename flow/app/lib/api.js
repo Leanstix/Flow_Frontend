@@ -180,6 +180,11 @@ export const createPost = async (content) => {
 export const createConversation = async (participants) => {
   try {
     const accessToken = localStorage.getItem("authToken");
+    if (!accessToken) {
+      throw new Error("No authToken found in localStorage");
+    }
+
+    console.log("Creating conversation with participants:", participants);
     const response = await api.post(
       "/conversations/",
       { participants },
@@ -195,6 +200,7 @@ export const createConversation = async (participants) => {
     throw error;
   }
 };
+
 
 /**
  * Fetch all conversations for the logged-in user

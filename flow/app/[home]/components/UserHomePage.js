@@ -136,10 +136,18 @@ export default function HomePage() {
   const handleAcceptRequest = async (requestId) => {
     try {
       const response = await acceptFriendRequest(requestId);
+      console.log("Accept Friend Request Response:", response);
+  
+      // Validate response structure
+      if (!response || typeof response.from_user_id === "undefined" || typeof response.to_user_id === "undefined") {
+        throw new Error("Invalid response structure from acceptFriendRequest");
+      }
+  
+      // Remove the accepted request from state
       setFriendRequests((prev) => prev.filter((req) => req.id !== requestId));
-      console.log(response)
       console.log("Friend request accepted:", response);
   
+      // Create a conversation
       const conversationResponse = await createConversation([
         response.from_user_id,
         response.to_user_id,
@@ -147,9 +155,10 @@ export default function HomePage() {
       console.log("Conversation created:", conversationResponse);
     } catch (err) {
       console.error("Error accepting friend request:", err);
-      alert("Failed to accept friend request. Please try again."); // Provide user feedback
+      alert("Failed to accept friend request. Please try again."); // User feedback
     }
   };
+  
   
 
   const handleCreatePost = async () => {
