@@ -82,18 +82,18 @@ export default function HomePage() {
 
   const handleSendMessage = async (ConversationId) => {
     if (!messageContent.trim()) {
-      alert("Message content cannot be empty!");
+      console.log("Message content cannot be empty!");
       return;
     }
     try {
       const conversation = ConversationId
       const message = await sendMessage(conversation, messageContent);
-      alert("Message sent!");
+      console.log("Message sent!");
       setMessageContent("");
       setSelectedFriendId(null);
     } catch (error) {
       console.error("Failed to send message:", error);
-      alert("Failed to send message. Please try again.");
+      console.log("Failed to send message. Please try again.");
     }
   };
 
@@ -119,7 +119,7 @@ export default function HomePage() {
       setFriendRequests(fetchedRequests);
     } catch (err) {
       console.error("Failed to fetch friend requests:", err);
-      alert("Could not load friend requests. Please try again later.");
+      console.log("Could not load friend requests. Please try again later.");
     }
   };
 
@@ -129,7 +129,7 @@ export default function HomePage() {
       setFriends(fetchedFriends);
     } catch (err) {
       console.error("Failed to fetch friends:", err);
-      alert("Could not load friends. Please try again later.");
+      console.log("Could not load friends. Please try again later.");
     }
   };
 
@@ -138,18 +138,23 @@ export default function HomePage() {
       const response = await acceptFriendRequest(requestId);
       setFriendRequests((prev) => prev.filter((req) => req.id !== requestId));
       console.log(response)
-      alert("Friend request accepted!");
-      const conversation = await createConversation([response.data.from_user_id, userData.user_id]);
-      console.log("Conversation created:", conversation);
+      console.log("Friend request accepted:", response);
+  
+      const conversationResponse = await createConversation([
+        response.from_user_id,
+        response.to_user_id,
+      ]);
+      console.log("Conversation created:", conversationResponse);
     } catch (err) {
       console.error("Error accepting friend request:", err);
-      alert("Failed to accept friend request. Please try again.");
+      alert("Failed to accept friend request. Please try again."); // Provide user feedback
     }
   };
+  
 
   const handleCreatePost = async () => {
     if (!newPostContent.trim()) {
-      alert("Post content cannot be empty!");
+      console.log("Post content cannot be empty!");
       return;
     }
     try {
@@ -157,16 +162,16 @@ export default function HomePage() {
       setPosts([response, ...posts]);
       setNewPostContent("");
       setShowPostPopup(false);
-      alert("Post created successfully!");
+      console.log("Post created successfully!");
     } catch (err) {
       console.error("Failed to create post:", err);
-      alert("Failed to create post. Please try again.");
+      console.log("Failed to create post. Please try again.");
     }
   };
 
   const handleAddComment = async (postId) => {
     if (!commentContent.trim()) {
-      alert("Comment cannot be empty!");
+      console.log("Comment cannot be empty!");
       return;
     }
     try {
@@ -177,10 +182,10 @@ export default function HomePage() {
       }));
       setCommentContent("");
       setActivePostId(null);
-      alert("Comment added!");
+      console.log("Comment added!");
     } catch (err) {
       console.error("Failed to add comment:", err);
-      alert("Failed to add comment. Please try again.");
+      console.log("Failed to add comment. Please try again.");
     }
   };
 
@@ -191,7 +196,7 @@ export default function HomePage() {
       router.push("/login");
     } catch (err) {
       console.error("Logout failed:", err);
-      alert("Logout failed. Please try again.");
+      console.log("Logout failed. Please try again.");
     }
   };
 
