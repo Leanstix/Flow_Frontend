@@ -67,7 +67,7 @@ export default function ChatComponent() {
                 <div className="w-10 h-10 bg-white rounded-full"></div>
                 <div>
                   <p className="text-white font-bold">{conversation.name || "Unnamed Conversation"}</p>
-                  <p className="text-white text-sm">{conversation.last_message || "No messages yet"}</p>
+                  <p className="text-white text-sm">{conversation.last_message.content || "No messages yet"}</p>
                 </div>
               </li>
             ))}
