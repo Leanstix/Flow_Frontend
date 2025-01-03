@@ -1,4 +1,3 @@
-"use client";
 import HomePage from "./components/[home]";
 import { useState, useEffect } from "react";
 
