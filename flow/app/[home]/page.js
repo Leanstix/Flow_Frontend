@@ -5,9 +5,7 @@ const UserHome = dynamic(() => import('./UserHome'), { ssr: false });
 
 export async function generateStaticParams() {
   return [
-    { params: { home: 'home1' } },
-    { params: { home: 'home2' } },
-    { params: { home: 'home3' } }
+    { params: { home: 'home1' } }
   ];
 }
 
