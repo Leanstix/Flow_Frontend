@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import {
   fetchSellerMessages,
-  replyToCustomerMessage,
+  //replyToCustomerMessage,
   fetchRepliesForCustomer,
 } from "@/app/lib/api";
 
@@ -27,7 +27,7 @@ export default function Message() {
   const handleReply = async (messageId) => {
     try {
       const replyData = { content: newReply };
-      await replyToCustomerMessage(selectedMessage.adId, messageId, replyData);
+      //await replyToCustomerMessage(selectedMessage.adId, messageId, replyData);
       alert("Reply sent successfully");
       setNewReply("");
     } catch (err) {
