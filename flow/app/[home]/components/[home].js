@@ -50,6 +50,15 @@ export default function HomePage() {
     fetchPosts();
   }, []);
 
+  export async function generateStaticParams() {
+    return [
+      { params: { home: 'home1' } },
+      { params: { home: 'home2' } },
+      { params: { home: 'home3' } }
+    ];
+  }
+  
+
   const fetchPosts = async () => {
     try {
       const fetchedPosts = await getPosts();
