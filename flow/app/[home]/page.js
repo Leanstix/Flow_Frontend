@@ -1,7 +1,7 @@
-"use client"; // Mark this file as a Client Component
+import dynamic from 'next/dynamic';
 
-import HomePage from "./components/[home]";
-import { useState, useEffect } from "react";
+// Dynamically import UserHome as a Client Component
+const UserHome = dynamic(() => import('./UserHome'), { ssr: false });
 
 export async function generateStaticParams() {
   return [
@@ -11,16 +11,6 @@ export async function generateStaticParams() {
   ];
 }
 
-export default function UserHome() {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  if (!isMounted) return null; // This ensures that LoginComponent renders only after mounting
-
-  return (
-    <div><HomePage /></div>
-  );
+export default function Page() {
+  return <UserHome />;
 }
