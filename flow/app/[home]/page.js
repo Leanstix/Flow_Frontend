@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 
 // Dynamically import UserHome as a Client Component
-const UserHome = dynamic(() => import('./UserHome'), { ssr: false });
+const UserHome = dynamic(() => import('./[home]'), { ssr: false });
 
 export async function generateStaticParams() {
   return [
