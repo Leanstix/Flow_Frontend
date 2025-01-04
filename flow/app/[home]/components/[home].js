@@ -21,14 +21,6 @@ import {
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
-export async function generateStaticParams() {
-  return [
-    { params: { home: 'home1' } },
-    { params: { home: 'home2' } },
-    { params: { home: 'home3' } }
-  ];
-}
-
 export default function HomePage() {
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
