@@ -1,29 +1,20 @@
-// app/[home]/page.js
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import HomePage from "./components/UserHome";
+import { useState, useEffect } from "react";
 
-export default function HomePage() {
-  const router = useRouter();
-  const { home } = router.query;
-  const [data, setData] = useState(null);
+export default function UserHome() {
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    if (home) {
-      // Fetch the dynamic data here based on "home" parameter
-      fetch(`/api/data?home=${home}`)
-        .then((res) => res.json())
-        .then((data) => setData(data));
-    }
-  }, [home]);
+    setIsMounted(true);
+  }, []);
 
-  if (!data) return <div>Loading...</div>;
+  if (!isMounted) return null; // Ensures rendering happens only after mounting
 
   return (
     <div>
-      <h1>Dynamic Page for {home}</h1>
-      <p>{data.content}</p>
+      <HomePage />
     </div>
   );
 }
