@@ -335,7 +335,7 @@ export const sendFriendRequest = async (toUserId) => {
       throw new Error('User is not authenticated. Token missing.');
     }
     const config = { headers: { Authorization: `Bearer ${accessToken}` } };
-    const response = await api.post('/friend-requests/', { to_user_id: toUserId }, config);
+    const response = await api.post('/requests/friend-requests/', { to_user_id: toUserId }, config);
     return response.data;
   } catch (error) {
     console.error('Error sending friend request:', error.response?.data || error.message);
@@ -352,7 +352,7 @@ export const acceptFriendRequest = async (friendRequestId) => {
       throw new Error('User is not authenticated. Token missing.');
     }
     const config = { headers: { Authorization: `Bearer ${accessToken}` } };
-    const response = await api.patch(`/friend-requests/${friendRequestId}/`, {}, config);
+    const response = await api.patch(`/requests/friend-requests/${friendRequestId}/`, {}, config);
     return response.data;
   } catch (error) {
     console.error('Error accepting friend request:', error.response?.data || error.message);
@@ -369,7 +369,7 @@ export const getFriends = async () => {
       throw new Error('User is not authenticated. Token missing.');
     }
     const config = { headers: { Authorization: `Bearer ${accessToken}` } };
-    const response = await api.get('/friends/', config);
+    const response = await api.get('/requests/friends/', config);
     return response.data;
   } catch (error) {
     console.error('Error retrieving friends:', error.response?.data || error.message);
@@ -386,7 +386,7 @@ export const getFriendRequests = async () => {
       throw new Error('User is not authenticated. Token missing.');
     }
     const config = { headers: { Authorization: `Bearer ${accessToken}` } };
-    const response = await api.get('/friend-requests/', config);
+    const response = await api.get('/requests/friend-requests/', config);
     return response.data;
   } catch (error) {
     console.error('Error retrieving friend requests:', error.response?.data || error.message);
