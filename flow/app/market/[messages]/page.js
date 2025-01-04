@@ -1,23 +1,11 @@
-"use client"
+import MessagePage from "./MessagePage"; // Client Component
 
-import Message from "./components/mesage";
-import { useState, useEffect } from "react";
-import ErrorBoundary from "@/app/lib/ErrorBoundary";
+export async function generateStaticParams() {
+  return [
+    { messages: '1' }, // Add more params as needed
+  ];
+}
 
 export default function Page() {
-    const [IsMounted, SetIsMounted] = useState(false);
-
-    useEffect(() => {
-        SetIsMounted(true);
-    }, []);
-
-    if (!IsMounted) return null;
-
-    return(
-        <div>
-            <ErrorBoundary>
-                <Message />
-            </ErrorBoundary>
-        </div>
-    )
+  return <MessagePage />;
 }
