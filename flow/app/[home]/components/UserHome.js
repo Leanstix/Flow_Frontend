@@ -247,7 +247,7 @@ export default function HomePage() {
         <div className="bg-white shadow rounded-lg p-6 mb-6">
           <div className="flex items-center space-x-6">
             <Image
-              src={`http://127.0.0.1:8000${profile_picture}`}
+              src={`https://flow-e9ec.onrender.com${profile_picture}`}
               alt="Profile Picture"
               width={200}
               height={200}
