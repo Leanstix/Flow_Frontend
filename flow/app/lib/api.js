@@ -83,7 +83,7 @@ export const refreshToken = async () => {
  */
 export const signUp = async (userData) => {
   try {
-    const response = await api.post('/register/', userData);
+    const response = await api.post('/userauth/register/', userData);
     return response.data;
   } catch (error) {
     console.error('Sign-Up error:', error.response?.data || error.message);

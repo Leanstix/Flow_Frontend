@@ -15,7 +15,7 @@ const ActivateAccount = () => {
     if (tokenFromURL) {
       // Send the token to the API for activation
       axios
-        .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/activate/`, { token: tokenFromURL })
+        .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/userauth/activate/`, { token: tokenFromURL })
         .then((response) => {
           // If activation is successful, set success message and redirect
           setMessage("Account activated successfully! Redirecting to login...");
