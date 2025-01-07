@@ -121,7 +121,7 @@ export default function LoginComponent() {
         {/* Signup link */}
         <div className="mt-3 text-center">
           <p>
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <span
               onClick={() => router.push("/signup")}
               className="text-blue-500 cursor-pointer hover:underline"
