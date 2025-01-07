@@ -1,16 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation"; // Import useRouter from next/navigation
-import { login } from "../../lib/api"; // Ensure this path is correct
 import Cookies from "js-cookie"; // Import js-cookie library
 
 export default function LoginComponent() {
-  const [userData, setUserData] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [mounted, setMounted] = useState(false);
-  const router = useRouter(); // Initialize router here but only use it after mount
+  const router = useRouter(); // Initialize router here
 
   // Ensure the component only mounts on the client side
   useEffect(() => {
@@ -21,9 +19,9 @@ export default function LoginComponent() {
     e.preventDefault();
     try {
       const response = await login(email, password);
-  
+
       if (!response) throw new Error('Empty response from login API');
-  
+
       const {
         access,
         email: userEmail,
@@ -32,11 +30,9 @@ export default function LoginComponent() {
         refresh,
         ...extraContents
       } = response;
-  
-      //console.log("Login response:", response);
-  
+
       const additionalFieldsExist = Object.keys(extraContents).length > 0;
-  
+
       // Save the full response as a cookie
       Cookies.set("user_data", JSON.stringify(response), {
         expires: 7, // 7 days expiration
@@ -45,24 +41,20 @@ export default function LoginComponent() {
       });
 
       if (additionalFieldsExist) {
-        if (mounted) {
-          const cookieData = Cookies.get("user_data");
-          if (cookieData) {
-            const parsedData = JSON.parse(cookieData); // Parse the cookie data
-            const { university_id } = parsedData; // Extract user_name
-            setUserData(parsedData); // Set the full user data
-            router.push(`/${university_id}`); // Dynamically navigate to the user_name route
-          }
+        const cookieData = Cookies.get("user_data");
+        if (cookieData) {
+          const parsedData = JSON.parse(cookieData); // Parse the cookie data
+          const { university_id } = parsedData; // Extract user_name
+          router.push(`/${university_id}`); // Dynamically navigate to the user_name route
         }
       } else {
-        if (mounted) router.push("/user-info");
+        router.push("/user-info");
       }
     } catch (err) {
       setError("Invalid email or password");
       console.error(err);
     }
   };
-
 
   if (!mounted) return null; // Prevents server-side rendering issues
 
@@ -125,6 +117,19 @@ export default function LoginComponent() {
           </div>
           {error && <p className="text-red-500 text-center mt-3">{error}</p>}
         </form>
+        
+        {/* Signup link */}
+        <div className="mt-3 text-center">
+          <p>
+            Don't have an account?{" "}
+            <span
+              onClick={() => router.push("/signup")}
+              className="text-blue-500 cursor-pointer hover:underline"
+            >
+              Signup
+            </span>
+          </p>
+        </div>
       </div>
     </div>
   );
