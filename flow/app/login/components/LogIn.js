@@ -19,9 +19,9 @@ export default function LoginComponent() {
     e.preventDefault();
     try {
       const response = await login(email, password);
-
+  
       if (!response) throw new Error('Empty response from login API');
-
+  
       const {
         access,
         email: userEmail,
@@ -30,25 +30,30 @@ export default function LoginComponent() {
         refresh,
         ...extraContents
       } = response;
-
+  
+      //console.log("Login response:", response);
+  
       const additionalFieldsExist = Object.keys(extraContents).length > 0;
-
+  
       // Save the full response as a cookie
       Cookies.set("user_data", JSON.stringify(response), {
         expires: 7, // 7 days expiration
         secure: true,
         sameSite: "strict",
       });
-
+  
       if (additionalFieldsExist) {
-        const cookieData = Cookies.get("user_data");
-        if (cookieData) {
-          const parsedData = JSON.parse(cookieData); // Parse the cookie data
-          const { university_id } = parsedData; // Extract user_name
-          router.push(`/${university_id}`); // Dynamically navigate to the user_name route
+        if (mounted) {
+          const cookieData = Cookies.get("user_data");
+          if (cookieData) {
+            const parsedData = JSON.parse(cookieData); // Parse the cookie data
+            const { university_id } = parsedData; // Extract user_name
+            setUserData(parsedData); // Set the full user data
+            router.push(`/${university_id}`); // Dynamically navigate to the user_name route
+          }
         }
       } else {
-        router.push("/user-info");
+        if (mounted) router.push("/user-info");
       }
     } catch (err) {
       setError("Invalid email or password");
