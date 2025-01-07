@@ -109,7 +109,7 @@ export const UserProfileUpdate = async (formData) => {
     };
     
     // Ensure the form data is JSON-formatted, as required by the API
-    const response = await api.put('/profile/update/', formData, config);
+    const response = await api.put('userauth/profile/update/', formData, config);
     return response.data;
   } catch (error) {
     console.error('Profile Update error:', error.response?.data || error.message);
@@ -128,7 +128,7 @@ export const updateUserProfile = async (formData) => {
     };
     
     // Ensure the form data is JSON-formatted, as required by the API
-    const response = await api.patch('/profile/update/', formData, config);
+    const response = await api.patch('userauth/profile/update/', formData, config);
     return response.data;
   } catch (error) {
     console.error('Profile Update error:', error.response?.data || error.message);
