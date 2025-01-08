@@ -403,7 +403,7 @@ export const searchUsers = async (query) => {
       throw new Error('User is not authenticated. Token missing.');
     }
     const config = { headers: { Authorization: `Bearer ${accessToken}` } };
-    const response = await api.get('/search/', { params: { q: query }, ...config });
+    const response = await api.get('/requests/search/', { params: { q: query }, ...config });
     return response.data;
   } catch (error) {
     console.error('Error searching users:', error.response?.data || error.message);
