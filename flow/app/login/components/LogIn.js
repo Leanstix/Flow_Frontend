@@ -8,6 +8,7 @@ export default function LoginComponent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [userData, setUserData] = useState([])
   const [mounted, setMounted] = useState(false);
   const router = useRouter(); // Initialize router here
 
