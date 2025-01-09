@@ -10,6 +10,7 @@ export default function ChatComponent() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [isMobileView, setIsMobileView] = useState(false);
+  const [expandedMessages, setExpandedMessages] = useState({}); // Track expanded messages
 
   // Handle responsive view
   useEffect(() => {
@@ -35,7 +36,7 @@ export default function ChatComponent() {
   }, []);
 
   // Fetch messages for the selected conversation
-  useEffect(() => {
+  useEffect(()n=> {
     if (!selectedConversationId) return;
     const loadMessages = async () => {
       try {
@@ -63,6 +64,14 @@ export default function ChatComponent() {
   // Handle back navigation in mobile view
   const handleBack = () => {
     setSelectedConversationId(null);
+  };
+
+  // Handle expanding a message
+  const toggleExpandMessage = (messageId) => {
+    setExpandedMessages((prev) => ({
+      ...prev,
+      [messageId]: !prev[messageId]
+    }));
   };
 
   return (
@@ -125,17 +134,32 @@ export default function ChatComponent() {
           ) : (
             <>
               <div className="flex flex-col gap-4 overflow-y-auto h-96">
-                {(messages || []).map((message) => (
-                  <div
-                    key={message.id}
-                    className={`p-3 rounded-lg ${
-                      message.is_outgoing ? 'bg-pink-400 self-end' : 'bg-pink-300 self-start'
-                    }`}
-                    style={{ maxWidth: '70%' }}
-                  >
-                    {message.content || 'No content available'}
-                  </div>
-                ))}
+                {(messages || []).map((message) => {
+                  const isExpanded = expandedMessages[message.id];
+                  const contentToShow = isExpanded
+                    ? message.content
+                    : message.content.slice(0, 255);
+
+                  return (
+                    <div
+                      key={message.id}
+                      className={`p-3 rounded-lg ${
+                        message.is_outgoing ? 'bg-pink-400 self-end' : 'bg-pink-300 self-start'
+                      }`}
+                      style={{ maxWidth: '70%' }}
+                    >
+                      {contentToShow}
+                      {message.content.length > 255 && !isExpanded && (
+                        <span
+                          className="text-blue-500 cursor-pointer ml-2"
+                          onClick={() => toggleExpandMessage(message.id)}
+                        >
+                          Read more
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
 
               {/* Input Section */}
