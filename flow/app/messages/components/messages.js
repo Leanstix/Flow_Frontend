@@ -1,13 +1,25 @@
-'use client';
+"use client";
 
 import React, { useState, useEffect } from 'react';
 import { fetchConversations, fetchMessages, sendMessage } from '@/app/lib/api'; // Ensure these API functions are correctly implemented
+import { IoArrowBack } from 'react-icons/io5';
 
 export default function ChatComponent() {
   const [conversations, setConversations] = useState([]);
   const [selectedConversationId, setSelectedConversationId] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
+  const [isMobileView, setIsMobileView] = useState(false);
+
+  // Handle responsive view
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth <= 768);
+    };
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Fetch all conversations on component mount
   useEffect(() => {
@@ -28,7 +40,6 @@ export default function ChatComponent() {
     const loadMessages = async () => {
       try {
         const data = await fetchMessages(selectedConversationId);
-        console.log(data)
         setMessages(data || []); // Ensure it's always an array
       } catch (error) {
         console.error('Error loading messages:', error.response?.data || error.message);
@@ -49,70 +60,107 @@ export default function ChatComponent() {
     }
   };
 
+  // Handle back navigation in mobile view
+  const handleBack = () => {
+    setSelectedConversationId(null);
+  };
+
   return (
-    <div className="bg-pink-10 flex items-center justify-center">
-      <div className="bg-pink-300 h-full flex shadow-lg">
-        {/* Sidebar */}
-        <div className="w-1/4 bg-pink-400 p-4 rounded-l-lg">
+    <div className="h-screen w-screen flex">
+      {/* Sidebar for conversations */}
+      {(isMobileView && !selectedConversationId) || !isMobileView ? (
+        <div
+          className={`${
+            isMobileView ? 'w-full' : 'w-1/5'
+          } bg-pink-400 p-4 overflow-y-auto`}
+        >
           <h2 className="text-white text-xl font-bold mb-4">Messages</h2>
           <ul>
             {conversations.map((conversation, index) => (
               <li
                 key={conversation.id || index}
-                className={`flex items-center gap-3 mb-4 cursor-pointer ${
+                className={`flex items-center gap-3 mb-4 cursor-pointer p-2 rounded-lg ${
                   selectedConversationId === conversation.id ? 'bg-pink-500' : ''
                 }`}
                 onClick={() => setSelectedConversationId(conversation.id)}
               >
                 <div className="w-10 h-10 bg-white rounded-full"></div>
                 <div>
-                  <p className="text-white font-bold">{conversation.name || "Unnamed Conversation"}</p>
-                  <p className="text-white text-sm">{conversation.last_message.content || "No messages yet"}</p>
+                  <p className="text-white font-bold">
+                    {conversation.name || 'Unnamed Conversation'}
+                  </p>
+                  <p className="text-white text-sm">
+                    {conversation.last_message.content || 'No messages yet'}
+                  </p>
                 </div>
               </li>
             ))}
           </ul>
         </div>
+      ) : null}
 
-        {/* Chat Section */}
-        <div className="w-3/4 bg-white p-4 flex flex-col justify-between rounded-r-lg">
-          <div className="flex flex-col gap-4 overflow-y-auto h-96">
-            {(messages || []).map((message) => (
-              <div
-                key={message.id}
-                className={`p-3 rounded-lg ${
-                  message.is_outgoing ? 'bg-pink-400 self-end' : 'bg-pink-300 self-start'
-                }`}
-                style={{ maxWidth: '70%' }}
-              >
-                {message.content || 'No content available'}
-              </div>
-            ))}
-          </div>
-
-          {/* Input Section */}
-          {selectedConversationId && (
-            <div className="flex items-center gap-2 mt-4">
-              <button className="bg-pink-400 text-white py-2 px-4 rounded-lg">
-                Attachment
-              </button>
-              <textarea
-                type="text"
-                placeholder="Enter message"
-                className="border rounded-lg flex-1 p-2"
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
+      {/* Chat section */}
+      {(!isMobileView || selectedConversationId) && (
+        <div
+          className={`${
+            isMobileView ? 'w-full' : 'w-4/5'
+          } bg-white p-4 flex flex-col justify-between`}
+        >
+          {isMobileView && selectedConversationId && (
+            <div className="flex items-center gap-2 mb-4">
+              <IoArrowBack
+                className="text-pink-400 text-2xl cursor-pointer"
+                onClick={handleBack}
               />
-              <button
-                className="bg-pink-400 text-white py-2 px-4 rounded-lg"
-                onClick={handleSendMessage}
-              >
-                Send
-              </button>
+              <h2 className="text-xl font-bold">Chat</h2>
             </div>
           )}
+
+          {!selectedConversationId && !isMobileView ? (
+            <div className="flex items-center justify-center h-full">
+              <p className="text-gray-500 text-xl">Select a conversation to start chatting</p>
+            </div>
+          ) : (
+            <>
+              <div className="flex flex-col gap-4 overflow-y-auto h-96">
+                {(messages || []).map((message) => (
+                  <div
+                    key={message.id}
+                    className={`p-3 rounded-lg ${
+                      message.is_outgoing ? 'bg-pink-400 self-end' : 'bg-pink-300 self-start'
+                    }`}
+                    style={{ maxWidth: '70%' }}
+                  >
+                    {message.content || 'No content available'}
+                  </div>
+                ))}
+              </div>
+
+              {/* Input Section */}
+              {selectedConversationId && (
+                <div className="flex items-center gap-2 mt-4">
+                  <button className="bg-pink-400 text-white py-2 px-4 rounded-lg">
+                    Attachment
+                  </button>
+                  <textarea
+                    type="text"
+                    placeholder="Enter message"
+                    className="border rounded-lg flex-1 p-2"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                  />
+                  <button
+                    className="bg-pink-400 text-white py-2 px-4 rounded-lg"
+                    onClick={handleSendMessage}
+                  >
+                    Send
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </div>
-      </div>
+      )}
     </div>
   );
 }
