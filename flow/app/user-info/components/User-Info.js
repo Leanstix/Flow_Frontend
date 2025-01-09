@@ -47,7 +47,7 @@ const UserProfile = () => {
     try {
       // Making a PUT request using UserProfileUpdate from api.js
       await UserProfileUpdate(formData);
-      router.push('/home'); // Redirect to profile page after successful update
+      router.push('/login'); // Redirect to profile page after successful update
     } catch (error) {
       console.error('Error updating profile:', error);
     }
@@ -162,7 +162,7 @@ const UserProfile = () => {
               className="border rounded-lg w-full text-base px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600"
               onChange={handleChange}
             />
-          </div>
+          </div>{/*
           <div className="mt-3">
             <label className="block text-base mb-2">Interests (comma-separated)</label>
             <input
@@ -171,7 +171,7 @@ const UserProfile = () => {
               placeholder="Enter interests as numbers, e.g., 1,2,3"
               onChange={handleInterestsChange}
             />
-          </div>
+          </div>*/}
           <div className="mt-5">
             <button
               type="submit"
