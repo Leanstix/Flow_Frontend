@@ -90,7 +90,9 @@ export default function ChatComponent() {
                     {conversation.name || 'Unnamed Conversation'}
                   </p>
                   <p className="text-white text-sm">
-                    {conversation.last_message.content || 'No messages yet'}
+                    {conversation.last_message.content.length > 10
+                      ? conversation.last_message.content.slice(0, 10) + '...'
+                      : conversation.last_message.content || 'No messages yet'}
                   </p>
                 </div>
               </li>

@@ -207,7 +207,7 @@ export const createConversation = async (participants) => {
  * @returns {Promise} - Axios response with list of conversations
  */
 export const fetchConversations = async () => {
-  try {
+  try { 
     const accessToken = localStorage.getItem("authToken");
     const response = await api.get("/conversations/", {
       headers: {
