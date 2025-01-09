@@ -154,7 +154,7 @@ export default function ChatComponent() {
                   return (
                     <div
                       key={message.id}
-                      className={`p-3 rounded-lg ${
+                      className={`p-3 rounded-lg whitespace-pre-wrap ${
                         message.is_outgoing ? 'bg-pink-400 self-end' : 'bg-pink-300 self-start'
                       }`}
                       style={{ maxWidth: '70%' }}
