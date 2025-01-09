@@ -22,6 +22,17 @@ export default function ChatComponent() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Close chat on Escape key press
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && selectedConversationId) {
+        setSelectedConversationId(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedConversationId]);
+
   // Fetch all conversations on component mount
   useEffect(() => {
     const loadConversations = async () => {
