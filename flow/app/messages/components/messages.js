@@ -36,7 +36,7 @@ export default function ChatComponent() {
   }, []);
 
   // Fetch messages for the selected conversation
-  useEffect(()n=> {
+  useEffect(() => {
     if (!selectedConversationId) return;
     const loadMessages = async () => {
       try {
