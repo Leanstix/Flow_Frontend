@@ -34,7 +34,7 @@ export const logout = async () => {
       throw new Error('No refresh token found.');
     }
     const response = await api.post(
-      '/logout/',
+      '/login/logout/',
       {},
       { headers: { Authorization: `Bearer ${refreshToken}` } }
     );
