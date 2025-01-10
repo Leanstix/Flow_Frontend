@@ -56,15 +56,9 @@ export const refreshToken = async () => {
       throw new Error('Refresh token not found.');
     }
 
-    const response = await api.post(
-      '/token/generate-access-token/',
-      {}, 
-      {
-        headers: {
-          Authorization: `Bearer ${storedRefreshToken}`,
-        },
-      }
-    );
+    const response = await api.post('/token/generate-access-token/', {
+      refresh: storedRefreshToken,
+    });
 
     localStorage.setItem('authToken', response.data.access);
     return response.data.access;
