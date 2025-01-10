@@ -29,17 +29,17 @@ export const login = async (email, password) => {
 export const logout = async () => {
   try {
     const refreshToken = localStorage.getItem('refreshToken');
-    console.log(refreshToken)
     if (!refreshToken) {
       throw new Error('No refresh token found.');
     }
-    const response = await api.post(
-      '/login/logout/',
-      {},
-      { headers: { Authorization: `Bearer ${refreshToken}` } }
-    );
+
+    // Pass the refresh token in the request body, not in the Authorization header
+    const response = await api.post('/login/logout/', { refresh: refreshToken });
+
+    // Clear tokens from local storage after successful logout
     localStorage.removeItem('authToken');
     localStorage.removeItem('refreshToken');
+    
     return response.data;
   } catch (error) {
     console.error('Logout error:', error.response?.data || error.message);
