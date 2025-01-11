@@ -68,6 +68,45 @@ export const refreshToken = async () => {
   }
 };
 
+//---------------------- Password Reset Request Function --------------------
+
+export const requestPasswordReset = async (email) => {
+  try {
+    const response = await api.post('/password-reset-request/', { email });
+    console.log('Password reset request successful:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Password reset request error:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+//---------------------- Password Reset Verify Function --------------------
+
+export const verifyPasswordReset = async (uid, token) => {
+  try {
+    const response = await api.post('/password-reset-verify/', { uid, token });
+    console.log('Password reset verification successful:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Password reset verification error:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+//---------------------- Password Reset Complete Function --------------------
+
+export const completePasswordReset = async (uid, token, password) => {
+  try {
+    const response = await api.post('/password-reset-complete/', { uid, token, password });
+    console.log('Password reset complete:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Password reset complete error:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
 //----------------------- User Registration -----------------------
 
 /**
