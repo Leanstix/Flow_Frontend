@@ -1,5 +1,5 @@
 "use client"
-import PasswordResetComponent from "./components/PasswordReset"
+import ResetPasswordComponent from "./components/PasswordReset"
 import { useState, useEffect } from "react";
 
 export default function Message() {
@@ -13,7 +13,7 @@ export default function Message() {
 
     return(
         <div>
-            <PasswordResetComponent />
+            <ResetPasswordComponent />
         </div>
     )
 }
