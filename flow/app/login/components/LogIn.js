@@ -109,9 +109,12 @@ export default function LoginComponent() {
               </label>
             </div>
             <div>
-              <a href="#" className="text-purple-800 font-semibold">
-                Forgot Password?
-              </a>
+            <a
+              onClick={() => router.push("/password-reset")}
+              className="text-purple-800 font-semibold cursor-pointer hover:underline"
+            >
+              Forgot Password?
+            </a>
             </div>
           </div>
           <div className="mt-5">
