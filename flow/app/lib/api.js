@@ -85,7 +85,7 @@ export const requestPasswordReset = async (email) => {
 
 export const verifyPasswordReset = async (uid, token) => {
   try {
-    const response = await api.post('/password-reset-verify/', { uid, token });
+    const response = await api.post('/reset-password/password-reset-verify/', { uid, token });
     console.log('Password reset verification successful:', response.data);
     return response.data;
   } catch (error) {
@@ -96,9 +96,9 @@ export const verifyPasswordReset = async (uid, token) => {
 
 //---------------------- Password Reset Complete Function --------------------
 
-export const completePasswordReset = async (uid, token, password) => {
+export const resetPassword = async (uid, token, password) => {
   try {
-    const response = await api.post('/password-reset-complete/', { uid, token, password });
+    const response = await api.post('/reset-password/password-reset-complete/', { uid, token, password });
     console.log('Password reset complete:', response.data);
     return response.data;
   } catch (error) {
