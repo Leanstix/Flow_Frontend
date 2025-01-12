@@ -732,3 +732,35 @@ export const joinRoom = async (roomName) => {
     throw error;
   }
 };
+
+//----------------------- Web Socket ---------------------
+let socket = null;
+
+export const initWebSocket = (roomName, onMessageReceived) => {
+  socket = new WebSocket(`${process.env.NEXT_PUBLIC_WS_BASE_URL}/ws/room/${roomName}/`);
+
+  socket.onopen = () => {
+    console.log('WebSocket connection established');
+  };
+
+  socket.onmessage = (event) => {
+    const message = JSON.parse(event.data);
+    onMessageReceived(message);
+  };
+
+  socket.onerror = (error) => {
+    console.error('WebSocket error:', error);
+  };
+
+  socket.onclose = () => {
+    console.log('WebSocket connection closed');
+  };
+};
+
+export const sendSignal = (message) => {
+  if (socket && socket.readyState === WebSocket.OPEN) {
+    socket.send(JSON.stringify(message));
+  } else {
+    console.error('WebSocket is not open. Cannot send message.');
+  }
+};
