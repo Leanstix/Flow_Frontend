@@ -708,3 +708,15 @@ export const fetchRepliesForCustomer = async (adId) => {
     throw error;
   }
 };
+
+//---------------------- Create Room Function --------------------
+export const createRoom = async () => {
+  try {
+    const response = await api.post('/call/create-room/');
+    console.log('Room created:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating room:', error.response?.data || error.message);
+    throw error;
+  }
+};
