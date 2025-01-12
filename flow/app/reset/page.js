@@ -2,7 +2,7 @@
 import VerifyPasswordReset from "./components/reset"
 import { useState, useEffect } from "react";
 
-export default function Message() {
+export default function Reset() {
     const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
