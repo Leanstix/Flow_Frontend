@@ -720,3 +720,15 @@ export const createRoom = async () => {
     throw error;
   }
 };
+
+//---------------------- Join Room Function --------------------
+export const joinRoom = async (roomName) => {
+  try {
+    const response = await api.get(`/join-room/${roomName}/`);
+    console.log('Room joined:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error joining room:', error.response?.data || error.message);
+    throw error;
+  }
+};
