@@ -1,5 +1,5 @@
 "use client"
-import VerifyPasswordReset from "./components/PasswordReset"
+import VerifyPasswordReset from "./components/reset"
 import { useState, useEffect } from "react";
 
 export default function Message() {
