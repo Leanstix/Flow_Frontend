@@ -11,7 +11,14 @@ export default function Home() {
 
     if (!userData) {
       router.push("/login");
-      return;
+
+    if (isTokenValid()) {
+      setIsAuthenticated(true);
+      router.push(`/${user_id}`);
+    } else {
+      router.push("/login");
+    }
+    setLoading(false);
     }
 
     const { refresh, user_id } = JSON.parse(userData);
