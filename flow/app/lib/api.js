@@ -710,7 +710,7 @@ export const fetchRepliesForCustomer = async (adId) => {
 };
 
 const getAccessToken = () => {
-  return localStorage.getItem('accessToken'); // Assumes token is stored as 'accessToken'
+  return localStorage.getItem('authToken'); // Assumes token is stored as 'accessToken'
 };
 
 //---------------------- Create Room Function --------------------
