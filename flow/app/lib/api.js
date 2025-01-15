@@ -709,11 +709,18 @@ export const fetchRepliesForCustomer = async (adId) => {
   }
 };
 
+const getAccessToken = () => {
+  return localStorage.getItem('accessToken'); // Assumes token is stored as 'accessToken'
+};
+
 //---------------------- Create Room Function --------------------
 export const createRoom = async () => {
   try {
+    const accessToken = getAccessToken();
     const config = { headers: { Authorization: `Bearer ${accessToken}` } };
-    const response = await api.post('/call/create-room/', config);
+    
+    const response = await api.post('/call/create-room/', {}, config);
+    
     console.log('Room created:', response.data);
     return response.data;
   } catch (error) {
@@ -725,8 +732,11 @@ export const createRoom = async () => {
 //---------------------- Join Room Function --------------------
 export const joinRoom = async (roomName) => {
   try {
+    const accessToken = getAccessToken();
     const config = { headers: { Authorization: `Bearer ${accessToken}` } };
-    const response = await api.get(`/call/join-room/${roomName}/`, config);
+    
+    const response = await api.post(`/call/join-room/${roomName}/`, {}, config);
+    
     console.log('Room joined:', response.data);
     return response.data;
   } catch (error) {
