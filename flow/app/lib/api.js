@@ -764,3 +764,11 @@ export const sendSignal = (message) => {
     console.error('WebSocket is not open. Cannot send message.');
   }
 };
+
+export const closeWebSocket = () => {
+  if (socket) {
+    socket.close();
+    socket = null;
+    console.log('WebSocket connection closed manually');
+  }
+};
