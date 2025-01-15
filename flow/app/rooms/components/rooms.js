@@ -22,12 +22,14 @@ const JoinCreateRoom = () => {
   const [loading, setLoading] = useState(false);
   const [inCall, setInCall] = useState(false);
   const [muted, setMuted] = useState(false);
+  const [callStatus, setCallStatus] = useState(''); // Added for status messages
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   const router = useRouter();
 
   const handleCreateRoom = async () => {
     setLoading(true);
+    setCallStatus('Creating room...');
     try {
       const data = await createRoom();
       setRoomName(data.room_name);
@@ -36,6 +38,7 @@ const JoinCreateRoom = () => {
       alert('Failed to create room. Please try again.');
     } finally {
       setLoading(false);
+      setCallStatus('');
     }
   };
 
@@ -46,6 +49,7 @@ const JoinCreateRoom = () => {
       return;
     }
     setLoading(true);
+    setCallStatus('Joining room...');
     try {
       const data = await joinRoom(roomName);
       router.push(`/room/${data.room_name}`);
@@ -53,6 +57,7 @@ const JoinCreateRoom = () => {
       alert('Failed to join room. Please check the room name and try again.');
     } finally {
       setLoading(false);
+      setCallStatus('');
     }
   };
 
@@ -61,37 +66,57 @@ const JoinCreateRoom = () => {
       alert('Please create or join a room first.');
       return;
     }
-    initWebSocket(roomName, handleSignalMessage);
-    await startLocalStream(localVideoRef);
+    setLoading(true);
+    setCallStatus('Starting call...');
+    try {
+      initWebSocket(roomName, handleSignalMessage);
+      await startLocalStream(localVideoRef);
 
-    createPeerConnection(remoteVideoRef, (candidate) => {
-      sendSignal({ type: 'new-ice-candidate', candidate });
-    });
+      createPeerConnection(remoteVideoRef, (candidate) => {
+        sendSignal({ type: 'new-ice-candidate', candidate });
+      });
 
-    const offer = await createOffer();
-    sendSignal({ type: 'offer', offer });
-    setInCall(true);
+      const offer = await createOffer();
+      sendSignal({ type: 'offer', offer });
+      setInCall(true);
+      setCallStatus('Call started.');
+    } catch (error) {
+      alert('Failed to start the call. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleAnswerCall = async (offer) => {
-    await setRemoteDescription(offer);
-    const answer = await createAnswer();
-    sendSignal({ type: 'answer', answer });
+    try {
+      setCallStatus('Answering call...');
+      await setRemoteDescription(offer);
+      const answer = await createAnswer();
+      sendSignal({ type: 'answer', answer });
+      setCallStatus('Call connected.');
+    } catch (error) {
+      alert('Failed to answer the call.');
+    }
   };
 
   const handleSignalMessage = async (message) => {
-    switch (message.type) {
-      case 'offer':
-        handleAnswerCall(message.offer);
-        break;
-      case 'answer':
-        await setRemoteDescription(message.answer);
-        break;
-      case 'new-ice-candidate':
-        await addIceCandidate(message.candidate);
-        break;
-      default:
-        break;
+    try {
+      switch (message.type) {
+        case 'offer':
+          handleAnswerCall(message.offer);
+          break;
+        case 'answer':
+          await setRemoteDescription(message.answer);
+          setCallStatus('Call connected.');
+          break;
+        case 'new-ice-candidate':
+          await addIceCandidate(message.candidate);
+          break;
+        default:
+          break;
+      }
+    } catch (error) {
+      console.error('Error handling signal message:', error);
     }
   };
 
@@ -104,13 +129,22 @@ const JoinCreateRoom = () => {
   };
 
   const handleEndCall = () => {
-    const localStream = localVideoRef.current.srcObject;
-    if (localStream) {
-      localStream.getTracks().forEach((track) => track.stop());
+    setLoading(true);
+    setCallStatus('Ending call...');
+    try {
+      const localStream = localVideoRef.current.srcObject;
+      if (localStream) {
+        localStream.getTracks().forEach((track) => track.stop());
+      }
+      closeWebSocket();
+      setInCall(false);
+      setRoomName('');
+      setCallStatus('Call ended.');
+    } catch (error) {
+      console.error('Error ending the call:', error);
+    } finally {
+      setLoading(false);
     }
-    closeWebSocket();
-    setInCall(false);
-    setRoomName('');
   };
 
   return (
@@ -146,9 +180,9 @@ const JoinCreateRoom = () => {
               <button
                 onClick={handleStartCall}
                 className="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700"
-                disabled={!roomName}
+                disabled={!roomName || loading}
               >
-                Start Call
+                {loading ? 'Starting Call...' : 'Start Call'}
               </button>
             </>
           ) : (
@@ -160,19 +194,23 @@ const JoinCreateRoom = () => {
               <div className="flex justify-around">
                 <button
                   onClick={handleToggleMute}
-                  className={`bg-${muted ? 'red' : 'green'}-600 text-white py-2 px-4 rounded-lg`}
+                  className={`${
+                    muted ? 'bg-red-600' : 'bg-green-600'
+                  } text-white py-2 px-4 rounded-lg`}
                 >
                   {muted ? 'Unmute' : 'Mute'}
                 </button>
                 <button
                   onClick={handleEndCall}
                   className="bg-red-600 text-white py-2 px-4 rounded-lg"
+                  disabled={loading}
                 >
-                  End Call
+                  {loading ? 'Ending Call...' : 'End Call'}
                 </button>
               </div>
             </div>
           )}
+          {callStatus && <p className="text-center text-gray-600">{callStatus}</p>}
         </div>
       </div>
     </div>
