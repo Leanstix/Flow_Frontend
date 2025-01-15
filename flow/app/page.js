@@ -14,11 +14,11 @@ export default function Home() {
       return;
     }
 
-    const { access, user_id } = JSON.parse(userData);
+    const { refresh, user_id } = JSON.parse(userData);
 
     // Simulate token validation (replace with actual API validation if available)
     const isTokenValid = () => {
-      const tokenParts = access.split(".");
+      const tokenParts = refresh.split(".");
       if (tokenParts.length !== 3) return false;
       const payload = JSON.parse(atob(tokenParts[1]));
       const expiry = payload.exp * 1000;
