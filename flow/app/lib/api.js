@@ -712,7 +712,8 @@ export const fetchRepliesForCustomer = async (adId) => {
 //---------------------- Create Room Function --------------------
 export const createRoom = async () => {
   try {
-    const response = await api.post('/call/create-room/');
+    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
+    const response = await api.post('/call/create-room/', config);
     console.log('Room created:', response.data);
     return response.data;
   } catch (error) {
@@ -724,7 +725,8 @@ export const createRoom = async () => {
 //---------------------- Join Room Function --------------------
 export const joinRoom = async (roomName) => {
   try {
-    const response = await api.get(`/join-room/${roomName}/`);
+    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
+    const response = await api.get(`/call/join-room/${roomName}/`, config);
     console.log('Room joined:', response.data);
     return response.data;
   } catch (error) {
