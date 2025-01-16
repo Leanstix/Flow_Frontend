@@ -24,15 +24,12 @@ export default function Home() {
     const { refresh, user_id } = JSON.parse(userData);
 
     // Simulate token validation (replace with actual API validation if available)
-    const isTokenValid = (token) => {
-      try {
-        const tokenParts = token.split(".");
-        if (tokenParts.length !== 3) return false;
-        const payload = JSON.parse(atob(tokenParts[1]));
-        return payload.exp * 1000 > Date.now();
-      } catch (err) {
-        return false;
-      }
+    const isTokenValid = () => {
+      const tokenParts = refresh.split(".");
+      if (tokenParts.length !== 3) return false;
+      const payload = JSON.parse(atob(tokenParts[1]));
+      const expiry = payload.exp * 1000;
+      return Date.now() < expiry;
     };
 
     if (isTokenValid()) {
