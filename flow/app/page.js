@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -11,34 +12,33 @@ export default function Home() {
 
     if (!userData) {
       router.push("/login");
+      setLoading(false);
+      return;
+    }
 
-    if (isTokenValid()) {
+    const { refreshToken, user_id } = JSON.parse(userData);
+
+    const isTokenValid = (token) => {
+      try {
+        const tokenParts = token.split(".");
+        if (tokenParts.length !== 3) return false;
+        const payload = JSON.parse(atob(tokenParts[1]));
+        return payload.exp * 1000 > Date.now();
+      } catch {
+        return false;
+      }
+    };
+
+    if (isTokenValid(refreshToken)) {
       setIsAuthenticated(true);
       router.push(`/${user_id}`);
     } else {
       router.push("/login");
     }
     setLoading(false);
-    }
-
-    const { refreshToken, user_id } = JSON.parse(userData);
-
-    // Simulate token validation (replace with actual API validation if available)
-    const isTokenValid = () => {
-      const tokenParts = refreshToken.split(".");
-      if (tokenParts.length !== 3) return false;
-      const payload = JSON.parse(atob(tokenParts[1]));
-      const expiry = payload.exp * 1000;
-      return Date.now() < expiry;
-    };
-
-    if (isTokenValid()) {
-      setIsAuthenticated(true);
-      router.push(`/${user_id}`);
-    } else {
-      router.push("/login");
-    }
   }, [router]);
+
+  if (loading) return <p>Loading...</p>;
 
   if (!isAuthenticated) return null;
 
