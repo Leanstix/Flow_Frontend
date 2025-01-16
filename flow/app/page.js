@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -17,6 +18,7 @@ export default function Home() {
     }
 
     const refresh_token = localStorage.getItem("refreshToken");
+    const data = Cookies.get("user_data");
 
     const isTokenValid = (token) => {
       try {
@@ -28,12 +30,14 @@ export default function Home() {
         return false;
       }
     };
-
-    if (isTokenValid(refresh_token)) {
-      setIsAuthenticated(true);
-      router.push(`/${user_id}`);
-    } else {
-      router.push("/login");
+    if (data) {
+      const { university_id } = JSON.parse(data);
+      if (isTokenValid(refresh_token)) {
+        setIsAuthenticated(true);
+        router.push(`/${university_id}`);
+      } else {
+        router.push("/login");
+      }
     }
     setLoading(false);
   }, [router]);
