@@ -34,8 +34,10 @@ export default function Home() {
       const { university_id } = JSON.parse(data);
       if (isTokenValid(refresh_token)) {
         setIsAuthenticated(true);
+        console.log("User is authenticated");
         router.push(`/${university_id}`);
       } else {
+        console.log("User is not authenticated");
         router.push("/login");
       }
     }
