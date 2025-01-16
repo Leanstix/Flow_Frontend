@@ -30,8 +30,9 @@ export default function Home() {
         return false;
       }
     };
+
     if (cookieData) {
-      const { university_id } = JSON.parse(data);
+      const { university_id } = JSON.parse(cookieData);
       if (isTokenValid(refresh_token)) {
         setIsAuthenticated(true);
         console.log("User is authenticated");
