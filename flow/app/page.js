@@ -18,7 +18,7 @@ export default function Home() {
     }
 
     const refresh_token = localStorage.getItem("refreshToken");
-    const data = Cookies.get("user_data");
+    const cookieData = Cookies.get("user_data");
 
     const isTokenValid = (token) => {
       try {
@@ -30,7 +30,7 @@ export default function Home() {
         return false;
       }
     };
-    if (data) {
+    if (cookieData) {
       const { university_id } = JSON.parse(data);
       if (isTokenValid(refresh_token)) {
         setIsAuthenticated(true);
