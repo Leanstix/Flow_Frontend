@@ -16,7 +16,7 @@ export default function Home() {
       return;
     }
 
-    const { refreshToken, user_id } = JSON.parse(userData);
+    const refresh_token = localStorage.getItem("refreshToken");
 
     const isTokenValid = (token) => {
       try {
@@ -29,7 +29,7 @@ export default function Home() {
       }
     };
 
-    if (isTokenValid(refreshToken)) {
+    if (isTokenValid(refresh_token)) {
       setIsAuthenticated(true);
       router.push(`/${user_id}`);
     } else {
