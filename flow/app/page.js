@@ -32,15 +32,22 @@ export default function Home() {
     };
 
     if (cookieData) {
-      const { university_id } = JSON.parse(cookieData);
-      if (isTokenValid(refresh_token)) {
-        setIsAuthenticated(true);
-        console.log("User is authenticated");
-        router.push(`/${university_id}`);
-      } else {
-        console.log("User is not authenticated");
+      try {
+        const { university_id } = JSON.parse(cookieData);
+        if (isTokenValid(refresh_token)) {
+          setIsAuthenticated(true);
+          console.log("User is authenticated");
+          router.push(`/${university_id}`);
+        } else {
+          console.log("User is not authenticated");
+          router.push("/login");
+        }
+      } catch (error) {
+        console.error("Failed to parse cookie data", error);
         router.push("/login");
       }
+    } else {
+      router.push("/login");
     }
     setLoading(false);
   }, [router]);
