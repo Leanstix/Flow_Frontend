@@ -15,8 +15,12 @@ export const startLocalStream = async (localVideoRef) => {
     console.log('Requesting access to media devices...');
     localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
     console.log('Media devices accessed successfully.');
-    localVideoRef.current.srcObject = localStream;
-    console.log('Local stream assigned to video element.');
+    if (localVideoRef.current) {
+      localVideoRef.current.srcObject = localStream;
+      console.log('Local stream assigned to video element.');
+    } else {
+      console.error('localVideoRef.current is null.');
+    }
     console.log('Local stream started.');
   } catch (error) {
     console.error('Error accessing media devices:', error);
