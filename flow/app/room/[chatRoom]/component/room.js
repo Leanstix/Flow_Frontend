@@ -65,8 +65,11 @@ const Room = ({ params }) => {
       setLoading(true);
       setCallStatus('Starting call...');
       try {
+        console.log('Initializing WebSocket...');
         initWebSocket(chatRoom, handleSignalMessage);
+        console.log('Starting local stream...');
         await startLocalStream(localVideoRef);
+        console.log('Local stream started.');
 
         createPeerConnection(remoteVideoRef, (candidate) => {
           sendSignal({ type: 'new-ice-candidate', candidate });
@@ -77,6 +80,7 @@ const Room = ({ params }) => {
         setInCall(true);
         setCallStatus('Call started.');
       } catch (error) {
+        console.error('Failed to start the call:', error);
         alert('Failed to start the call. Please try again.');
       } finally {
         setLoading(false);
