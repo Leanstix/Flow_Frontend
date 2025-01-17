@@ -748,25 +748,27 @@ export const joinRoom = async (roomName) => {
 //----------------------- Web Socket ---------------------
 let socket = null;
 
-export const initWebSocket = (roomName, onMessageReceived) => {
-  socket = new WebSocket(`${process.env.NEXT_PUBLIC_WS_BASE_URL}/ws/room/${roomName}/`);
-
-  socket.onopen = () => {
-    console.log('WebSocket connection established');
-  };
-
-  socket.onmessage = (event) => {
+export const initWebSocket = (chatRoom, handleSignalMessage) => {
+  const webSocket = new WebSocket(`wss://flow-aleshinloye-olamilekan-s-projects.vercel.app/room/${chatRoom}/ws/room/${chatRoom}`);
+  
+  webSocket.onmessage = (event) => {
     const message = JSON.parse(event.data);
-    onMessageReceived(message);
+    handleSignalMessage(message);
   };
 
-  socket.onerror = (error) => {
+  webSocket.onopen = () => {
+    console.log('WebSocket connection opened.');
+  };
+
+  webSocket.onerror = (error) => {
     console.error('WebSocket error:', error);
   };
 
-  socket.onclose = () => {
-    console.log('WebSocket connection closed');
+  webSocket.onclose = () => {
+    console.log('WebSocket connection closed.');
   };
+
+  return webSocket;
 };
 
 export const sendSignal = (message) => {

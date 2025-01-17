@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   initWebSocket,
-  sendSignal,
+  sendSignal as sendSignalOriginal,
   closeWebSocket,
 } from '@/app/lib/api';
 import {
@@ -28,6 +28,8 @@ const Room = ({ params }) => {
   const router = useRouter();
 
   useEffect(() => {
+    let webSocket;
+
     const handleSignalMessage = async (message) => {
       try {
         switch (message.type) {
@@ -61,12 +63,30 @@ const Room = ({ params }) => {
       }
     };
 
+    const sendSignal = (message) => {
+      if (webSocket && webSocket.readyState === WebSocket.OPEN) {
+        webSocket.send(JSON.stringify(message));
+      } else {
+        console.error('WebSocket is not open. Cannot send message.');
+      }
+    };
+
     const startCall = async () => {
       setLoading(true);
       setCallStatus('Starting call...');
       try {
         console.log('Initializing WebSocket...');
-        initWebSocket(chatRoom, handleSignalMessage);
+        webSocket = initWebSocket(chatRoom, handleSignalMessage);
+        webSocket.onopen = () => {
+          console.log('WebSocket connection opened.');
+        };
+        webSocket.onerror = (error) => {
+          console.error('WebSocket error:', error);
+        };
+        webSocket.onclose = () => {
+          console.log('WebSocket connection closed.');
+        };
+
         console.log('Starting local stream...');
         await startLocalStream(localVideoRef);
         console.log('Local stream started.');
@@ -91,7 +111,9 @@ const Room = ({ params }) => {
 
     return () => {
       endCall(remoteVideoRef);
-      closeWebSocket();
+      if (webSocket) {
+        webSocket.close();
+      }
     };
   }, [chatRoom]);
 
