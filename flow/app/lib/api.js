@@ -749,8 +749,9 @@ export const joinRoom = async (roomName) => {
 let socket = null;
 
 export const initWebSocket = (chatRoom, handleSignalMessage) => {
+  const token = localStorage.getItem('authToken');
   const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-  const webSocketURL = `${protocol}://flow-aleshinloye-olamilekan-s-projects.vercel.app/ws/call/${chatRoom}/`;
+  const webSocketURL = `${protocol}://flow-aleshinloye-olamilekan-s-projects.vercel.app/ws/call/${chatRoom}/?token=${token}`;
 
   const webSocket = new WebSocket(webSocketURL);
 
