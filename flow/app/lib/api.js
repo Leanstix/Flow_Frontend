@@ -745,27 +745,30 @@ export const joinRoom = async (roomName) => {
   }
 };
 
-//----------------------- Web Socket ---------------------
+//--------------- web socket -------------------
 let socket = null;
 
 export const initWebSocket = (chatRoom, handleSignalMessage) => {
-  const webSocket = new WebSocket(`wss://flow-aleshinloye-olamilekan-s-projects.vercel.app/room/${chatRoom}/ws/room/${chatRoom}`);
-  
+  const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+  const webSocketURL = `${protocol}://flow-aleshinloye-olamilekan-s-projects.vercel.app/ws/call/${chatRoom}/`;
+
+  const webSocket = new WebSocket(webSocketURL);
+
   webSocket.onmessage = (event) => {
     const message = JSON.parse(event.data);
     handleSignalMessage(message);
   };
 
   webSocket.onopen = () => {
-    console.log('WebSocket connection opened.');
+    console.log("WebSocket connection opened.");
   };
 
   webSocket.onerror = (error) => {
-    console.error('WebSocket error:', error);
+    console.error("WebSocket error:", error);
   };
 
   webSocket.onclose = () => {
-    console.log('WebSocket connection closed.');
+    console.log("WebSocket connection closed.");
   };
 
   return webSocket;
