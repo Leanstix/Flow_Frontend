@@ -68,6 +68,20 @@ export const refreshToken = async () => {
   }
 };
 
+//---------------------- Password change by user function --------------------
+
+export const passwordChange = async (oldPassword, newPassword) => {
+  try {
+    const accessToken = localStorage.getItem('authToken');
+    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
+    const response = await api.post('/userauth/change-password/', { old_password: oldPassword, new_password: newPassword }, config);
+    return response.data;
+  } catch (error) {
+    console.error('Password change error:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
 //---------------------- Password Reset Request Function --------------------
 
 export const requestPasswordReset = async (email) => {
@@ -751,7 +765,7 @@ let socket = null;
 export const initWebSocket = (chatRoom, handleSignalMessage) => {
   const token = localStorage.getItem('authToken');
   const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-  const webSocketURL = `${protocol}://flow-aleshinloye-olamilekan-s-projects.vercel.app/ws/call/${chatRoom}/?token=${token}`;
+  const webSocketURL = `${protocol}://localhost:3000/ws/call/${chatRoom}/?token=${token}`;
 
   const webSocket = new WebSocket(webSocketURL);
 
