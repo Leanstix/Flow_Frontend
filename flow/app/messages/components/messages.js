@@ -118,6 +118,13 @@ export default function ChatComponent() {
     }
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
   return (
     <div className="h-screen w-screen flex">
       {/* Sidebar for conversations */}
@@ -245,6 +252,7 @@ export default function ChatComponent() {
                     className="border rounded-lg flex-1 p-2"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
+                    onKeyPress={handleKeyPress}
                   />
                   <button
                     className="bg-pink-400 text-white py-2 px-4 rounded-lg"
