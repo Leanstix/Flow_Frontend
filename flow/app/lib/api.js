@@ -74,7 +74,12 @@ export const passwordChange = async (oldPassword, newPassword) => {
   try {
     const accessToken = localStorage.getItem('authToken');
     const config = { headers: { Authorization: `Bearer ${accessToken}` } };
-    const response = await api.post('/userauth/change-password/', { old_password: oldPassword, new_password: newPassword }, config);
+    const response = await api.post('/userauth/change-password/', { 
+      old_password: oldPassword, 
+      new_password: newPassword 
+    }, 
+      config
+    );
     return response.data;
   } catch (error) {
     console.error('Password change error:', error.response?.data || error.message);

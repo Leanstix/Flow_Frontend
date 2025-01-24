@@ -11,6 +11,7 @@ export default function ChatComponent() {
   const [newMessage, setNewMessage] = useState('');
   const [isMobileView, setIsMobileView] = useState(false);
   const [expandedMessages, setExpandedMessages] = useState({}); // Track expanded messages
+  const [showAttachmentOptions, setShowAttachmentOptions] = useState(false);
 
   // Handle responsive view
   useEffect(() => {
@@ -83,6 +84,28 @@ export default function ChatComponent() {
       ...prev,
       [messageId]: !prev[messageId]
     }));
+  };
+
+  const handleAttachmentClick = () => {
+    setShowAttachmentOptions(!showAttachmentOptions);
+  };
+
+  const handleOptionClick = (option) => {
+    setShowAttachmentOptions(false);
+    // Logic to open file manager based on the selected option
+    switch (option) {
+      case 'photos_videos':
+        // Open file manager for photos & videos
+        break;
+      case 'camera':
+        // Open camera
+        break;
+      case 'document':
+        // Open file manager for documents
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -175,10 +198,37 @@ export default function ChatComponent() {
 
               {/* Input Section */}
               {selectedConversationId && (
-                <div className="flex items-center gap-2 mt-4">
-                  <button className="bg-pink-400 text-white py-2 px-4 rounded-lg">
+                <div className="relative flex items-center gap-2 mt-4">
+                  <button
+                    className="bg-pink-400 text-white py-2 px-4 rounded-lg"
+                    onClick={handleAttachmentClick}
+                  >
                     Attachment
                   </button>
+                  {showAttachmentOptions && (
+                    <div className="absolute bottom-12 left-0 bg-white border rounded-lg shadow-lg p-2">
+                      <ul>
+                        <li
+                          className="cursor-pointer p-2 hover:bg-gray-200"
+                          onClick={() => handleOptionClick('photos_videos')}
+                        >
+                          Photos & Videos
+                        </li>
+                        <li
+                          className="cursor-pointer p-2 hover:bg-gray-200"
+                          onClick={() => handleOptionClick('camera')}
+                        >
+                          Camera
+                        </li>
+                        <li
+                          className="cursor-pointer p-2 hover:bg-gray-200"
+                          onClick={() => handleOptionClick('document')}
+                        >
+                          Document
+                        </li>
+                      </ul>
+                    </div>
+                  )}
                   <textarea
                     type="text"
                     placeholder="Enter message"
