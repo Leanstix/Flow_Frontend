@@ -92,17 +92,30 @@ export default function ChatComponent() {
 
   const handleOptionClick = (option) => {
     setShowAttachmentOptions(false);
-    // Logic to open file manager based on the selected option
+  
     switch (option) {
       case 'photos_videos':
         // Open file manager for photos & videos
+        document.getElementById('photoVideoInput').click();
         break;
+  
       case 'camera':
-        // Open camera
+        // Open camera (requires media capture API)
+        navigator.mediaDevices.getUserMedia({ video: true })
+          .then((stream) => {
+            console.log("Camera accessed:", stream);
+            // Handle stream or display camera UI
+          })
+          .catch((error) => {
+            console.error("Error accessing camera:", error);
+          });
         break;
+  
       case 'document':
         // Open file manager for documents
+        document.getElementById('documentInput').click();
         break;
+  
       default:
         break;
     }
