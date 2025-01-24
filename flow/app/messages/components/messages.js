@@ -92,15 +92,13 @@ export default function ChatComponent() {
 
   const handleOptionClick = (option) => {
     setShowAttachmentOptions(false);
-  
+
     switch (option) {
       case 'photos_videos':
-        // Open file manager for photos & videos
         document.getElementById('photoVideoInput').click();
         break;
-  
+
       case 'camera':
-        // Open camera (requires media capture API)
         navigator.mediaDevices.getUserMedia({ video: true })
           .then((stream) => {
             console.log("Camera accessed:", stream);
@@ -110,12 +108,11 @@ export default function ChatComponent() {
             console.error("Error accessing camera:", error);
           });
         break;
-  
+
       case 'document':
-        // Open file manager for documents
         document.getElementById('documentInput').click();
         break;
-  
+
       default:
         break;
     }
@@ -257,6 +254,21 @@ export default function ChatComponent() {
                   </button>
                 </div>
               )}
+              {/* Hidden input elements for file selection */}
+              <input
+                type="file"
+                id="photoVideoInput"
+                accept="image/*,video/*"
+                style={{ display: 'none' }}
+                onChange={(e) => console.log(e.target.files)}
+              />
+              <input
+                type="file"
+                id="documentInput"
+                accept=".pdf,.doc,.docx,.txt"
+                style={{ display: 'none' }}
+                onChange={(e) => console.log(e.target.files)}
+              />
             </>
           )}
         </div>
