@@ -7,7 +7,7 @@ import { updateUserProfile } from '../../lib/api'; // Ensure correct path for ap
 const UpdateUserProfile = () => {
   const router = useRouter();
   const [profileData, setProfileData] = useState({
-    user_name: '', // Added user_name
+    user_name: '',
     first_name: '',
     last_name: '',
     gender: '',
@@ -19,47 +19,71 @@ const UpdateUserProfile = () => {
     interests: [],
   });
 
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
     if (type === 'file') {
-      setProfileData({ ...profileData, [name]: files[0] }); // Ensure it's only the first file
+      setProfileData({ ...profileData, [name]: files[0] });
     } else {
       setProfileData({ ...profileData, [name]: value });
     }
   };
 
   const handleInterestsChange = (e) => {
-    setProfileData({ ...profileData, interests: e.target.value.split(',').map(String) }); // Ensure correct array of integers
+    setProfileData({ ...profileData, interests: e.target.value.split(',').map(Number) });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+
+    // Validate required fields
+    if (!profileData.first_name || !profileData.last_name) {
+      setError('First name and last name are required.');
+      return;
+    }
+
+    // Validate profile picture file type
+    if (
+      profileData.profile_picture &&
+      !['image/jpeg', 'image/png'].includes(profileData.profile_picture.type)
+    ) {
+      setError('Only JPEG or PNG files are allowed for the profile picture.');
+      return;
+    }
 
     const formData = new FormData();
     Object.entries(profileData).forEach(([key, value]) => {
       if (key === 'interests') {
-        value.forEach((interest) => formData.append('interests', interest)); // Ensure interests are appended properly
+        value.forEach((interest) => formData.append('interests', interest));
       } else if (value !== null) {
         formData.append(key, value);
       }
     });
 
+    setLoading(true);
+
     try {
-      // Making a PUT request using updateUserProfile from api.js
       await updateUserProfile(formData);
-      router.push('/home'); // Redirect to profile page after successful update
+      router.push('/home');
     } catch (error) {
-      console.error('Error updating profile:', error);
+      setError(error.response?.data?.detail || 'Failed to update profile.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="flex justify-center items-center h-screen bg-white m-6">
       <div className="w-96 p-6 shadow-2xl bg-white rounded-[30px]">
-        <h1 className="text-3xl block text-center font-semibold"><i className="fa-solid fa-user"></i> User Info</h1>
+        <h1 className="text-3xl block text-center font-semibold">
+          <i className="fa-solid fa-user"></i> User Info
+        </h1>
         <hr className="mt-3" />
+        {error && <p className="text-red-600 text-center mt-3">{error}</p>}
         <form onSubmit={handleSubmit}>
-          {/* User Name Field */}
           <div className="mt-3">
             <label className="block text-base mb-2">User name</label>
             <input
@@ -80,6 +104,7 @@ const UpdateUserProfile = () => {
               placeholder="Enter first name"
               value={profileData.first_name}
               onChange={handleChange}
+              required
             />
           </div>
           <div className="mt-3">
@@ -91,29 +116,32 @@ const UpdateUserProfile = () => {
               placeholder="Enter last name"
               value={profileData.last_name}
               onChange={handleChange}
+              required
             />
           </div>
-          <div className="grid grid-cols-2 mt-3">
-            <div className="col-span-1">
+          <div className="grid grid-cols-2 mt-3 gap-2">
+            <div>
               <label className="block text-base mb-2">Gender</label>
               <select
                 name="gender"
-                className="mr-3 rounded-lg border"
+                className="w-full border rounded-lg"
                 value={profileData.gender}
                 onChange={handleChange}
               >
-                <option disabled>Select your gender</option>
+                <option value="" disabled>
+                  Select your gender
+                </option>
                 <option value="M">Male</option>
                 <option value="F">Female</option>
               </select>
             </div>
-            <div className="col-span-1">
+            <div>
               <label className="block text-base mb-2">Phone number</label>
               <input
                 type="text"
                 name="phone_number"
+                className="border w-full rounded-lg"
                 placeholder="+2348099999999"
-                className="border mr-3 rounded-lg"
                 value={profileData.phone_number}
                 onChange={handleChange}
               />
@@ -134,13 +162,17 @@ const UpdateUserProfile = () => {
             <label className="block text-base mb-2">Year of study</label>
             <select
               name="year_of_study"
-              className="mr-3 rounded-lg border"
+              className="w-full border rounded-lg"
               value={profileData.year_of_study}
               onChange={handleChange}
             >
-              <option disabled>Select year of study</option>
+              <option value="" disabled>
+                Select year of study
+              </option>
               {[1, 2, 3, 4, 5, 6].map((year) => (
-                <option key={year} value={year}>{year}</option>
+                <option key={year} value={year}>
+                  {year}
+                </option>
               ))}
             </select>
           </div>
@@ -175,9 +207,12 @@ const UpdateUserProfile = () => {
           <div className="mt-5">
             <button
               type="submit"
-              className="border-2 border-purple-800 bg-purple-800 text-white py-1 w-full rounded-md hover:bg-transparent hover:text-purple-800 font-semibold"
+              disabled={loading}
+              className={`border-2 border-purple-800 bg-purple-800 text-white py-1 w-full rounded-md font-semibold transition duration-300 ${
+                loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-transparent hover:text-purple-800'
+              }`}
             >
-              <i className="fa-solid fa-right-to-bracket"></i>&nbsp;&nbsp;Update my information
+              {loading ? 'Updating...' : 'Update my information'}
             </button>
           </div>
         </form>

@@ -175,7 +175,7 @@ export const updateUserProfile = async (formData) => {
     const config = {
       headers: {
         Authorization: `Bearer ${access_token}`,
-        'Content_Type': 'multipart/form-data',
+        'Content-Type': 'multipart/form-data',
       },
     };
     
