@@ -207,7 +207,6 @@ const UpdateUserProfile = () => {
           <div className="mt-5">
             <button
               type="submit"
-              disabled={loading}
               className={`border-2 border-purple-800 bg-purple-800 text-white py-1 w-full rounded-md font-semibold transition duration-300 ${
                 loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-transparent hover:text-purple-800'
               }`}
