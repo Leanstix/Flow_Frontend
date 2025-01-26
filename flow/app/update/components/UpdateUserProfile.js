@@ -44,7 +44,6 @@ const UpdateUserProfile = () => {
   
     if (!profileData.first_name || !profileData.last_name) {
       setError('First name and last name are required.');
-      return;
     }
   
     if (
@@ -52,7 +51,6 @@ const UpdateUserProfile = () => {
       !['image/jpeg', 'image/png'].includes(profileData.profile_picture.type)
     ) {
       setError('Only JPEG or PNG files are allowed for the profile picture.');
-      return;
     }
   
     const formData = new FormData();
