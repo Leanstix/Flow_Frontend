@@ -38,14 +38,15 @@ const UpdateUserProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
-    // Validate required fields
+  
+    console.log('Form submission triggered'); // Debugging
+    console.log('Profile Data:', profileData); // Debugging
+  
     if (!profileData.first_name || !profileData.last_name) {
       setError('First name and last name are required.');
       return;
     }
-
-    // Validate profile picture file type
+  
     if (
       profileData.profile_picture &&
       !['image/jpeg', 'image/png'].includes(profileData.profile_picture.type)
@@ -53,7 +54,7 @@ const UpdateUserProfile = () => {
       setError('Only JPEG or PNG files are allowed for the profile picture.');
       return;
     }
-
+  
     const formData = new FormData();
     Object.entries(profileData).forEach(([key, value]) => {
       if (key === 'interests') {
@@ -62,13 +63,17 @@ const UpdateUserProfile = () => {
         formData.append(key, value);
       }
     });
-
+  
+    console.log('Form Data:', formData); // Debugging
+  
     setLoading(true);
-
+  
     try {
       await updateUserProfile(formData);
+      console.log('Profile updated successfully'); // Debugging
       router.push('/home');
     } catch (error) {
+      console.error('Error updating profile:', error); // Debugging
       setError(error.response?.data?.detail || 'Failed to update profile.');
     } finally {
       setLoading(false);
