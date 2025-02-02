@@ -225,6 +225,7 @@ export default function HomePage() {
   }
 
   const { first_name, last_name, email, bio, profile_picture } = userData;
+  const profile_pic = userData.profile_picture || "https://via.placeholder.com/200";
 
   return (
     <div className="bg-gray-100 min-h-screen">
@@ -247,7 +248,7 @@ export default function HomePage() {
         <div className="bg-white shadow rounded-lg p-6 mb-6">
           <div className="flex items-center space-x-6">
             <Image
-              src={"https://drive.usercontent.google.com/download?id=1j7BFA4zrlw6yrOGxQzFh4xeC01nU4URs&export=view&authuser=0"}
+              src={profile_pic}
               alt="Profile Picture"
               width={200}
               height={200}
