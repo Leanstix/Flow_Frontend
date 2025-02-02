@@ -247,7 +247,7 @@ export default function HomePage() {
         <div className="bg-white shadow rounded-lg p-6 mb-6">
           <div className="flex items-center space-x-6">
             <Image
-              src={`${profile_picture}`}
+              src={"https://drive.usercontent.google.com/download?id=1j7BFA4zrlw6yrOGxQzFh4xeC01nU4URs&export=view&authuser=0"}
               alt="Profile Picture"
               width={200}
               height={200}
