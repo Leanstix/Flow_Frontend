@@ -247,7 +247,7 @@ export default function HomePage() {
         {/* User Profile */}
         <div className="bg-white shadow rounded-lg p-6 mb-6">
           <div className="flex items-center space-x-6">
-            <Image
+            <img
               src={profile_pic}
               alt="Profile Picture"
               width={200}
