@@ -17,6 +17,7 @@ import {
   sendMessage,
   createConversation,
   searchPostsByUser,
+  getFeedPosts,
 } from "@/app/lib/api";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -53,7 +54,7 @@ export default function HomePage() {
 
   const fetchPosts = async () => {
     try {
-      const fetchedPosts = await getPosts();
+      const fetchedPosts = await getFeedPosts();
       setPosts(fetchedPosts);
     } catch (err) {
       console.error("Failed to fetch posts:", err);
