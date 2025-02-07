@@ -214,7 +214,7 @@ export const getFeedPosts = async () => {
       throw new Error('User is not authenticated. Token missing.');
     }
     const config = { headers: { Authorization: `Bearer ${accessToken}` } };
-    const response = await api.get('/feed/', config);
+    const response = await api.get('/all-feed/', config);
     return response.data;
   } catch (error) {
     console.error('Error fetching feed posts:', error.response?.data || error.message);
