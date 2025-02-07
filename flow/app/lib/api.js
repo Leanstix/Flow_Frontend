@@ -205,6 +205,23 @@ export const getPosts = async () => {
   }
 };
 
+//---------------------- Get All Feed Posts --------------------
+
+export const getFeedPosts = async () => {
+  try {
+    const accessToken = localStorage.getItem('authToken');
+    if (!accessToken) {
+      throw new Error('User is not authenticated. Token missing.');
+    }
+    const config = { headers: { Authorization: `Bearer ${accessToken}` } };
+    const response = await api.get('/feed/', config);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching feed posts:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
 // -----------------------Create Posts ----------------------
 
 export const createPost = async (content) => {
