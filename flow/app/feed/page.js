@@ -1,7 +1,7 @@
 "use client";
 
 import {useEffect, useState} from "react";
-import Feed from "@/app/feed/components/feed";
+import Feed from "./components/feed";
 
 export default function FeedPage() {
     <Feed />
