@@ -9,15 +9,26 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@radix-ui/react-slot": "^1.1.2",
+    "@shadcn/ui": "^0.0.4",
     "axios": "^1.7.9",
+    "button": "^1.1.1",
+    "card": "^2.5.4",
+    "class-variance-authority": "^0.7.1",
+    "input": "^1.0.1",
     "js-cookie": "^3.0.5",
+    "lucide-react": "^0.475.0",
     "next": "14.2.17",
     "peer": "^1.0.2",
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^5.4.0",
+    "shadcn-ui": "^0.9.4",
     "sharp": "^0.33.5",
-    "socket.io": "^4.8.1"
+    "skeleton": "^0.1.2",
+    "socket.io": "^4.8.1",
+    "tailwind-merge": "^3.0.1",
+    "textarea": "^0.3.0"
   },
   "devDependencies": {
     "eslint": "^8",

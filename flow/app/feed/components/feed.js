@@ -12,7 +12,7 @@ import {
     getFriendRequests
 } from "@/app/lib/api";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
