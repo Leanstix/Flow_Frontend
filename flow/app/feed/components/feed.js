@@ -40,6 +40,11 @@ export default function Feed() {
         });
     }, []);
 
+    const handleAcceptFriendRequest = async (id) => {
+        await acceptFriendRequest(id);
+        setFriendRequests(friendRequests.filter(request => request.id !== id));
+    };
+
     const handleLike = async (postId) => {
         setPosts(posts.map(post => 
             post.id === postId ? { ...post, isLiked: !post.isLiked, likes: post.isLiked ? post.likes - 1 : post.likes + 1 } : post
@@ -84,21 +89,29 @@ export default function Feed() {
             {loading ? (
                 <Skeleton className="h-40 w-full rounded-lg" />
             ) : (
-                posts.map(post => (
+                (posts || []).map(post => (
                     <Card key={post.id} className="mb-4">
                         <CardHeader className="flex items-center space-x-3">
-                            <Image src={post.user.avatar || "/default-avatar.png"} alt="User Avatar" width={40} height={40} className="rounded-full"/>
+                            <Image 
+                                src={post.user?.avatar || "/default-avatar.png"} 
+                                alt="User Avatar" 
+                                width={40} 
+                                height={40} 
+                                className="rounded-full"
+                            />
                             <div>
-                                <h4 className="font-semibold">{post.user.name}</h4>
-                                <p className="text-sm text-gray-500">{new Date(post.created_at).toLocaleString()}</p>
+                                <h4 className="font-semibold">{post.user?.name || "Unknown User"}</h4>
+                                <p className="text-sm text-gray-500">
+                                    {post.created_at ? new Date(post.created_at).toLocaleString() : "Unknown Date"}
+                                </p>
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <p className="mb-2">{post.content}</p>
+                            <p className="mb-2">{post.content || "No content available"}</p>
                             <div className="flex items-center gap-4">
                                 <Button variant="ghost" onClick={() => handleLike(post.id)}>
                                     <Heart className={post.isLiked ? "text-red-500" : "text-gray-500"} size={18}/> 
-                                    <span className="ml-1">{post.likes}</span>
+                                    <span className="ml-1">{post.likes ?? 0}</span>
                                 </Button>
                                 <Button variant="ghost">
                                     <Send size={18} />
