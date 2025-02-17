@@ -193,7 +193,7 @@ export const deletePost = async (postId) => {
   try {
     const accessToken = localStorage.getItem('authToken');
     if(!accessToken) {
-      throw new Error(Unauthorized User!!!! Fuck off);
+      throw new Error('Unauthorized User!!!! Fuck off');
     }
     const config = { headers: { Authorization: `Bearer ${accessToken}`}}
     const response = await api.get(`/posts/${postId}/delete`, config);
