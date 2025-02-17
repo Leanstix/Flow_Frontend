@@ -189,7 +189,7 @@ export const updateUserProfile = async (formData) => {
 };
 
 //--------------------- delete post ----------
-export const deletePoste = async (postId) => {
+export const deletePost = async (postId) => {
   try {
     const accessToken = localStorage.getItem('authToken');
     if(!accessToken) {
