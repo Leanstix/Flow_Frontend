@@ -1,18 +1,18 @@
 "use client";
 
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import Feed from "./components/feed";
 
 export default function FeedPage() {
-    const {isMounted, setisMounted} = useState(false);
-    useEffect(() => {
-        setisMounted(true);
-        }, []);
+    const [isMounted, setIsMounted] = useState(false);
     
-        if (!isMounted) return null;
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+    
+    if (!isMounted) return null;
 
     return (
         <div><Feed /></div>
-    )
-    
+    );
 }
