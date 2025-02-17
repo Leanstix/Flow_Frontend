@@ -188,6 +188,22 @@ export const updateUserProfile = async (formData) => {
   }
 };
 
+//--------------------- delete post ----------
+export const deletePoste = async (postId) => {
+  try {
+    const accessToken = localStorage.getItem('authToken');
+    if(!accessToken) {
+      throw new Error(Unauthorized User!!!! Fuck off);
+    }
+    const config = { headers: { Authorization: `Bearer ${accessToken}`}}
+    const response = await api.get(`/posts/${postId}/delete`, config);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting post:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
 //---------------------- Get posts --------------------
 
 export const getPosts = async () => {
