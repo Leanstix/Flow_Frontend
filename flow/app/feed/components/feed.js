@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { 
-    getFeedPosts,  
+    getPosts,  
     createPost,
     toggleLike,
     addComment,
@@ -28,7 +28,7 @@ export default function Feed() {
     const router = useRouter();
 
     useEffect(() => {
-        getFeedPosts().then((data) => {  
+        getPosts().then((data) => {  
             setPosts(data);
             setLoading(false);
         }).catch(() => setLoading(false));
