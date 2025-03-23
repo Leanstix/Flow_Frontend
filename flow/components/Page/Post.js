@@ -1,4 +1,9 @@
 import Image from "next/image";
+import Like from "@/public/Icons/like_black.svg"
+import Repost from "@/public/Icons/Repost.svg"
+import Comment from "@/public/Icons/Comment.svg"
+import Report from "@/public/Icons/Report.svg"
+import View from "@/public/Icons/View.svg"
 
 const Post = ({ name, username, content }) => {
   return (
