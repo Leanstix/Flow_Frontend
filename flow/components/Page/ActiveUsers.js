@@ -3,7 +3,7 @@ import User from "@/public/User.svg";
 
 const ActiveUsers = ({ users }) => {
   return (
-    <div>
+    <div className="ml-3">
       <h2 className="font-extrabold text-2xl">Active</h2>
       {users.map((user, index) => (
         <div key={index} className="flex mt-2">
