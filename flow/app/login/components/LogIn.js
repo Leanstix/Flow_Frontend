@@ -66,7 +66,7 @@ export default function LoginComponent() {
   if (!mounted) return null; // Prevents server-side rendering issues
 
   return (
-    <div className="flex justify-center items-center h-screen bg-white">
+    <div className="flex justify-center items-center h-screen bg-[#070007]">
       <div className="w-96 p-6 shadow-2xl bg-white rounded-[30px]">
         <h1 className="text-3xl block text-center font-semibold">
           <i className="fa-solid fa-user"></i> Log In
