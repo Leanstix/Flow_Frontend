@@ -11,7 +11,9 @@ const Layout = () => {
     <div className="bg-[#070007] min-h-screen">
       <Header />
       <div className="grid grid-cols-12 mt-5">
-        <Sidebar />
+        <div className="h-screen col-span-3">
+          <Sidebar />
+        </div>
         <div className="col-span-6 mx-5">
           <div className="flex space-x-4 mb-4">
             {["User1", "User2", "User3", "User4"].map((user, index) => (
