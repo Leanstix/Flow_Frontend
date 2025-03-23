@@ -10,12 +10,15 @@ const Layout = () => {
   return (
     <div className="bg-[#070007] min-h-screen">
       <Header />
-      <div className="grid grid-cols-12 mt-5">
-        <div className="h-screen col-span-3">
+      <div className="bg-[#070007] h-screen grid grid-cols-12 mt-5">
+        {/* Left Sidebar */}
+        <div className="col-span-3 bg-[#070007] border-r border-white h-screen p-3">
           <Sidebar />
         </div>
-        <div className="col-span-6 mx-5">
-          <div className="flex space-x-4 mb-4 h-screen overflow-y-auto">
+
+        {/* Middle Section (Scrollable) */}
+        <div className="col-span-6 h-screen overflow-y-scroll p-5">
+          <div className="flex space-x-4 mb-4">
             {["User1", "User2", "User3", "User4"].map((user, index) => (
               <FriendRequest key={index} username={user} />
             ))}
@@ -24,7 +27,9 @@ const Layout = () => {
           <Post name="Jane Doe" username="janedoe" content="Build with purpose and make an impact."/>
           <Post name="Jane Doe" username="janedoe" content="Build with purpose and make an impact."/>
         </div>
-        <div className="col-span-3 text-white border-l ml-3 h-screen">
+
+        {/* Right Sidebar */}
+        <div className="col-span-3 text-white border-l h-screen p-3">
           <ActiveUsers users={["UserA", "UserB", "UserC", "UserD", "UserE"]} className="h-1/2 overflow-y-auto"/>
           <Announcement />
         </div>
