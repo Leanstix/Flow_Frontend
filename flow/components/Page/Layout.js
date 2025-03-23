@@ -15,7 +15,7 @@ const Layout = () => {
           <Sidebar />
         </div>
         <div className="col-span-6 mx-5">
-          <div className="flex space-x-4 mb-4">
+          <div className="flex space-x-4 mb-4 h-screen overflow-y-auto">
             {["User1", "User2", "User3", "User4"].map((user, index) => (
               <FriendRequest key={index} username={user} />
             ))}
@@ -24,8 +24,8 @@ const Layout = () => {
           <Post name="Jane Doe" username="janedoe" content="Build with purpose and make an impact."/>
           <Post name="Jane Doe" username="janedoe" content="Build with purpose and make an impact."/>
         </div>
-        <div className="col-span-3 text-white border-l ml-3">
-          <ActiveUsers users={["UserA", "UserB", "UserC", "UserD", "UserE"]} />
+        <div className="col-span-3 text-white border-l ml-3 h-screen">
+          <ActiveUsers users={["UserA", "UserB", "UserC", "UserD", "UserE"]} className="h-1/2 overflow-y-auto"/>
           <Announcement />
         </div>
       </div>
