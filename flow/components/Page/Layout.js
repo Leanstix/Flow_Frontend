@@ -26,6 +26,9 @@ const Layout = () => {
           <Post name="John Doe" username="johndoe" content="Great developers don’t just write code—they architect solutions."/>
           <Post name="Jane Doe" username="janedoe" content="Build with purpose and make an impact."/>
           <Post name="Jane Doe" username="janedoe" content="Build with purpose and make an impact."/>
+          <Post name="John Doe" username="johndoe" content="Great developers don’t just write code—they architect solutions."/>
+          <Post name="Jane Doe" username="janedoe" content="Build with purpose and make an impact."/>
+          <Post name="Jane Doe" username="janedoe" content="Build with purpose and make an impact."/>
         </div>
 
         {/* Right Sidebar */}
