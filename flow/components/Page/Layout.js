@@ -32,7 +32,7 @@ const Layout = () => {
         </div>
 
         {/* Right Sidebar */}
-        <div className="col-span-3 text-white border-l h-screen p-3">
+        <div className="col-span-3 text-white border-l h-1/2 p-3 overflow-y-auto">
           <ActiveUsers users={["UserA", "UserB", "UserC", "UserD", "UserE", "UserA", "UserB", "UserC", "UserD", "UserE"]} className="h-1/2 overflow-y-auto"/>
           <Announcement />
         </div>
