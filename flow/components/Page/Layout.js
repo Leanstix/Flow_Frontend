@@ -6,7 +6,7 @@ import FriendRequest from "./FriendRequest";
 import Post from "./Post";
 import ActiveUsers from "./ActiveUsers";
 import Announcement from "./Announcement";
-import Messages from "./Messages"; // Example: Add other components
+import ChatComponent from "../../app/messages/components/messages"; // Example: Add other components
 
 const Layout = () => {
   const [activeSection, setActiveSection] = useState("home"); // State to track selected section
