@@ -39,7 +39,7 @@ const Layout = () => {
               <Post name="Jane Doe" username="janedoe" content="Build with purpose and make an impact."/>
             </>
           )}
-          {activeSection === "messages" && <Messages />}
+          {activeSection === "messages" && <ChatComponent />}
           {activeSection === "notifications" && <p className="text-white">Notifications Page</p>}
           {activeSection === "market" && <p className="text-white">Market Section</p>}
         </div>
