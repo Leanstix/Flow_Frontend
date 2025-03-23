@@ -17,7 +17,7 @@ const Layout = () => {
         </div>
 
         {/* Middle Section (Scrollable) */}
-        <div className="col-span-6 h-screen overflow-y-scroll p-5">
+        <div className="col-span-6 h-screen overflow-y-auto p-5">
           <div className="flex space-x-4 mb-4">
             {["User1", "User2", "User3", "User4"].map((user, index) => (
               <FriendRequest key={index} username={user} />
