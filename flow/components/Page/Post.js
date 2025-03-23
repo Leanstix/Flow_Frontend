@@ -4,7 +4,7 @@ import Repost from "@/public/Icons/Repost.svg";
 import Comment from "@/public/Icons/Comment.svg";
 import Report from "@/public/Icons/Report.svg";
 import View from "@/public/Icons/View.svg";
-import User from "@/public/user-3296.svg";
+import User from "@/public/User.svg";
 
 const Post = ({ name, username, content, likes, reposts, comments, reports, views }) => {
   return (

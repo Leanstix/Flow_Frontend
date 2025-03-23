@@ -1,5 +1,5 @@
 import Image from "next/image";
-import User from "@/public/user-3296.svg";
+import User from "@/public/User.svg";
 
 const ActiveUsers = ({ users }) => {
   return (
