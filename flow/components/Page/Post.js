@@ -4,12 +4,13 @@ import Repost from "@/public/Icons/Repost.svg";
 import Comment from "@/public/Icons/Comment.svg";
 import Report from "@/public/Icons/Report.svg";
 import View from "@/public/Icons/View.svg";
+import User from "@/public/user-3296.svg";
 
 const Post = ({ name, username, content, likes, reposts, comments, reports, views }) => {
   return (
     <div className="text-white mt-3 p-4 bg-[#1F062E] rounded-lg">
       <div className="flex items-center">
-        <Image src="/profile-icon.svg" alt="User" width={50} height={50} className="rounded-full"/>
+        <Image src={User} alt="User" width={50} height={50} className="rounded-full"/>
         <div className="ml-2">
           <div className="font-semibold">{name}</div>
           <div className="text-gray-400">@{username}</div>
