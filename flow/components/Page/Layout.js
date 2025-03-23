@@ -20,6 +20,7 @@ const Layout = () => {
           </div>
           <Post name="John Doe" username="johndoe" content="Great developers don’t just write code—they architect solutions."/>
           <Post name="Jane Doe" username="janedoe" content="Build with purpose and make an impact."/>
+          <Post name="Jane Doe" username="janedoe" content="Build with purpose and make an impact."/>
         </div>
         <div className="col-span-3 text-white border-l ml-3">
           <ActiveUsers users={["UserA", "UserB", "UserC", "UserD", "UserE"]} />
