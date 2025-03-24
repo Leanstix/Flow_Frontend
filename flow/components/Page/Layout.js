@@ -1,12 +1,11 @@
-"use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
+import ChatComponent from "./ChatComponent";
 import FriendRequest from "./FriendRequest";
 import Post from "./Post";
 import ActiveUsers from "./ActiveUsers";
 import Announcement from "./Announcement";
-import ChatComponent from "@/app/messages/components/messages";
 
 const Layout = () => {
   const [activeSection, setActiveSection] = useState("home");
@@ -22,7 +21,7 @@ const Layout = () => {
           <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} />
         </div>
 
-        {/* Middle Section (Content changes based on selection) */}
+        {/* Middle Section */}
         <div className="col-span-6 h-screen overflow-y-auto p-5">
           {activeSection === "home" && (
             <>
@@ -35,31 +34,30 @@ const Layout = () => {
               <Post name="Jane Doe" username="janedoe" content="Build with purpose and make an impact." />
             </>
           )}
-
-          {activeSection === "message" && (
+          
+          {activeSection === "message" && selectedConversationId && (
             <ChatComponent 
-              selectedConversationId={selectedConversationId} 
-              setSelectedConversationId={setSelectedConversationId} 
-              isSidebarMode={true} 
+              selectedConversationId={selectedConversationId}
+              setSelectedConversationId={setSelectedConversationId}
+              showOnlyMessages // Custom prop to show only selected messages
             />
           )}
 
-          {activeSection === "trending" && <p className="text-white">Trending Content</p>}
-          {activeSection === "requests" && <p className="text-white">Friend Requests</p>}
-          {activeSection === "groups" && <p className="text-white">Groups Section</p>}
-          {activeSection === "market" && <p className="text-white">Marketplace</p>}
-          {activeSection === "notification" && <p className="text-white">Notifications</p>}
-          {activeSection === "events" && <p className="text-white">Upcoming Events</p>}
-          {activeSection === "logout" && <p className="text-white">Logging out...</p>}
+          {activeSection === "message" && !selectedConversationId && (
+            <div className="flex items-center justify-center h-full">
+              <p className="text-gray-500 text-xl">Select a conversation to start chatting</p>
+            </div>
+          )}
+
+          {activeSection !== "message" && <p className="text-white">{activeSection} Content</p>}
         </div>
 
         {/* Right Sidebar */}
         <div className="col-span-3 text-white border-l h-screen p-3 flex flex-col">
           {activeSection === "message" ? (
             <ChatComponent 
-              selectedConversationId={selectedConversationId} 
-              setSelectedConversationId={setSelectedConversationId} 
-              isSidebarMode={true} 
+              setSelectedConversationId={setSelectedConversationId}
+              showOnlyConversations // Custom prop to show only conversation list
             />
           ) : (
             <>
