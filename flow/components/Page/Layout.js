@@ -58,6 +58,7 @@ const Layout = () => {
             <ChatComponent 
               setSelectedConversationId={setSelectedConversationId}
               showOnlyConversations // Custom prop to show only conversation list
+              className="h-screen overflow-y-auto"
             />
           ) : (
             <>
