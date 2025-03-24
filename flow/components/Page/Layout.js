@@ -6,10 +6,10 @@ import FriendRequest from "./FriendRequest";
 import Post from "./Post";
 import ActiveUsers from "./ActiveUsers";
 import Announcement from "./Announcement";
-import ChatComponent from "../../app/messages/components/messages"; // Example: Add other components
+import ChatComponent from "@/app/messages/components/messages";
 
 const Layout = () => {
-  const [activeSection, setActiveSection] = useState("home"); // State to track selected section
+  const [activeSection, setActiveSection] = useState("home");
 
   return (
     <div className="bg-[#070007] min-h-screen">
@@ -21,7 +21,7 @@ const Layout = () => {
           <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} />
         </div>
 
-        {/* Middle Section (Content changes based on selected section) */}
+        {/* Middle Section (Content changes based on selection) */}
         <div className="col-span-6 h-screen overflow-y-auto p-5">
           {activeSection === "home" && (
             <>
@@ -32,21 +32,21 @@ const Layout = () => {
               </div>
               <Post name="John Doe" username="johndoe" content="Great developers don’t just write code—they architect solutions." />
               <Post name="Jane Doe" username="janedoe" content="Build with purpose and make an impact." />
-              <Post name="Jane Doe" username="janedoe" content="Build with purpose and make an impact."/>
-              <Post name="Jane Doe" username="janedoe" content="Build with purpose and make an impact."/>
-              <Post name="John Doe" username="johndoe" content="Great developers don’t just write code—they architect solutions."/>
-              <Post name="Jane Doe" username="janedoe" content="Build with purpose and make an impact."/>
-              <Post name="Jane Doe" username="janedoe" content="Build with purpose and make an impact."/>
             </>
           )}
-          {activeSection === "messages" && <ChatComponent />}
-          {activeSection === "notifications" && <p className="text-white">Notifications Page</p>}
-          {activeSection === "market" && <p className="text-white">Market Section</p>}
+          {activeSection === "message" && <ChatComponent />}
+          {activeSection === "trending" && <p className="text-white">Trending Content</p>}
+          {activeSection === "requests" && <p className="text-white">Friend Requests</p>}
+          {activeSection === "groups" && <p className="text-white">Groups Section</p>}
+          {activeSection === "market" && <p className="text-white">Marketplace</p>}
+          {activeSection === "notification" && <p className="text-white">Notifications</p>}
+          {activeSection === "events" && <p className="text-white">Upcoming Events</p>}
+          {activeSection === "logout" && <p className="text-white">Logging out...</p>}
         </div>
 
-        {/* Right Sidebar (Can change based on selection if needed) */}
+        {/* Right Sidebar */}
         <div className="col-span-3 text-white border-l h-screen p-3">
-          <ActiveUsers users={["UserA", "UserB", "UserC", "UserD", "UserE", "UserA", "UserB", "UserC", "UserD", "UserE"]} />
+          <ActiveUsers users={["UserA", "UserB", "UserC", "UserD", "UserE"]} />
           <Announcement />
         </div>
       </div>
