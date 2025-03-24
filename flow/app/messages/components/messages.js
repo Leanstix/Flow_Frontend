@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { fetchConversations, fetchMessages } from "@/app/lib/api"
+import { fetchConversations, fetchMessages, sendMessage } from "@/app/lib/api";
 
 export default function ChatComponent({ selectedConversationId, setSelectedConversationId, showOnlyConversations, showOnlyMessages }) {
   const [conversations, setConversations] = useState([]);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
 
+  // Load conversations on mount
   useEffect(() => {
     const loadConversations = async () => {
       try {
@@ -18,6 +19,7 @@ export default function ChatComponent({ selectedConversationId, setSelectedConve
     loadConversations();
   }, []);
 
+  // Load messages when a conversation is selected
   useEffect(() => {
     if (!selectedConversationId) return;
     const loadMessages = async () => {
@@ -31,6 +33,7 @@ export default function ChatComponent({ selectedConversationId, setSelectedConve
     loadMessages();
   }, [selectedConversationId]);
 
+  // Close chat on "Escape" key
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
@@ -39,7 +42,35 @@ export default function ChatComponent({ selectedConversationId, setSelectedConve
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [selectedConversationId]);
+  }, [setSelectedConversationId]);
+
+  // Handle message input
+  const handleInputChange = (e) => setNewMessage(e.target.value);
+
+  // Handle Enter key (send or newline)
+  const handleKeyDown = async (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault(); // Prevent new line
+      await handleSendMessage();
+    }
+  };
+
+  // Send message
+  const handleSendMessage = async () => {
+    if (!newMessage.trim()) return;
+    const messageData = {
+      conversationId: selectedConversationId,
+      content: newMessage.trim(),
+    };
+
+    try {
+      const sentMessage = await sendMessage(messageData);
+      setMessages((prevMessages) => [...prevMessages, sentMessage]);
+      setNewMessage(""); // Clear input
+    } catch (error) {
+      console.error("Error sending message:", error.response?.data || error.message);
+    }
+  };
 
   return (
     <div className="h-full flex flex-col">
@@ -64,22 +95,30 @@ export default function ChatComponent({ selectedConversationId, setSelectedConve
       {/* Show messages in the middle section */}
       {showOnlyMessages && selectedConversationId && (
         <div className="h-full flex flex-col justify-between">
+          {/* Messages List */}
           <div className="flex flex-col gap-4 overflow-y-auto h-96">
             {messages.map((message) => (
-              <div key={message.id} className={`p-3 rounded-lg ${message.is_outgoing ? "bg-pink-400 self-end" : "bg-pink-300 self-start"}`}>
+              <div 
+                key={message.id} 
+                className={`p-3 rounded-lg whitespace-pre-line ${message.is_outgoing ? "bg-pink-400 self-end" : "bg-pink-300 self-start"}`}
+              >
                 {message.content}
               </div>
             ))}
           </div>
+
+          {/* Message Input Box */}
           <div className="flex items-center gap-2 mt-4">
             <textarea
               type="text"
-              placeholder="Enter message"
-              className="border rounded-lg flex-1 p-2"
+              placeholder="Type a message..."
+              className="border rounded-lg flex-1 p-2 resize-none"
               value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+              rows={2}
             />
-            <button className="bg-pink-400 text-white py-2 px-4 rounded-lg" onClick={() => {}}>
+            <button className="bg-pink-400 text-white py-2 px-4 rounded-lg" onClick={handleSendMessage}>
               Send
             </button>
           </div>
