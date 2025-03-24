@@ -10,6 +10,7 @@ import ChatComponent from "@/app/messages/components/messages";
 
 const Layout = () => {
   const [activeSection, setActiveSection] = useState("home");
+  const [selectedConversationId, setSelectedConversationId] = useState(null);
 
   return (
     <div className="bg-[#070007] min-h-screen">
@@ -32,15 +33,17 @@ const Layout = () => {
               </div>
               <Post name="John Doe" username="johndoe" content="Great developers don’t just write code—they architect solutions." />
               <Post name="Jane Doe" username="janedoe" content="Build with purpose and make an impact." />
-              <Post name="John Doe" username="johndoe" content="Great developers don’t just write code—they architect solutions." />
-              <Post name="Jane Doe" username="janedoe" content="Build with purpose and make an impact." />
-              <Post name="John Doe" username="johndoe" content="Great developers don’t just write code—they architect solutions." />
-              <Post name="Jane Doe" username="janedoe" content="Build with purpose and make an impact." />
-              <Post name="John Doe" username="johndoe" content="Great developers don’t just write code—they architect solutions." />
-              <Post name="Jane Doe" username="janedoe" content="Build with purpose and make an impact." />
             </>
           )}
-          {activeSection === "message" && <ChatComponent />}
+
+          {activeSection === "message" && (
+            <ChatComponent 
+              selectedConversationId={selectedConversationId} 
+              setSelectedConversationId={setSelectedConversationId} 
+              isSidebarMode={true} 
+            />
+          )}
+
           {activeSection === "trending" && <p className="text-white">Trending Content</p>}
           {activeSection === "requests" && <p className="text-white">Friend Requests</p>}
           {activeSection === "groups" && <p className="text-white">Groups Section</p>}
@@ -52,12 +55,22 @@ const Layout = () => {
 
         {/* Right Sidebar */}
         <div className="col-span-3 text-white border-l h-screen p-3 flex flex-col">
-          <div className="h-1/2 overflow-y-auto">
-            <ActiveUsers users={["UserA", "UserB", "UserC", "UserD", "UserE", "UserF", "UserG", "UserH"]} />
-          </div>
-          <div className="h-1/2 overflow-y-auto mt-2">
-            <Announcement />
-          </div>
+          {activeSection === "message" ? (
+            <ChatComponent 
+              selectedConversationId={selectedConversationId} 
+              setSelectedConversationId={setSelectedConversationId} 
+              isSidebarMode={true} 
+            />
+          ) : (
+            <>
+              <div className="h-1/2 overflow-y-auto">
+                <ActiveUsers users={["UserA", "UserB", "UserC", "UserD", "UserE", "UserF", "UserG", "UserH"]} />
+              </div>
+              <div className="h-1/2 overflow-y-auto mt-2">
+                <Announcement />
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
