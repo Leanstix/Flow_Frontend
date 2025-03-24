@@ -5,7 +5,6 @@ export default function ChatComponent({ selectedConversationId, setSelectedConve
   const [conversations, setConversations] = useState([]);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const [expandedMessages, setExpandedMessages] = useState({}); // Track expanded messages
 
   // Load conversations on mount
   useEffect(() => {
@@ -68,14 +67,6 @@ export default function ChatComponent({ selectedConversationId, setSelectedConve
     }
   };
 
-  // Handle expanding a message
-  const toggleExpandMessage = (messageId) => {
-    setExpandedMessages((prev) => ({
-      ...prev,
-      [messageId]: !prev[messageId]
-    }));
-  };
-
   return (
     <div className="h-full flex flex-col">
       {/* Show conversation list in right sidebar */}
@@ -101,24 +92,14 @@ export default function ChatComponent({ selectedConversationId, setSelectedConve
         <div className="h-full flex flex-col justify-between">
           {/* Messages List */}
           <div className="flex flex-col gap-4 overflow-y-auto h-96">
-            {messages.map((message) => {
-              const isExpanded = expandedMessages[message.id];
-              const contentToShow = isExpanded ? message.content : message.content.slice(0, 255);
-
-              return (
-                <div 
-                  key={message.id} 
-                  className={`p-3 rounded-lg whitespace-pre-line ${message.is_outgoing ? "bg-pink-400 self-end" : "bg-pink-300 self-start"}`}
-                >
-                  {contentToShow}
-                  {message.content.length > 255 && !isExpanded && (
-                    <span className="text-blue-500 cursor-pointer ml-2" onClick={() => toggleExpandMessage(message.id)}>
-                      Read more
-                    </span>
-                  )}
-                </div>
-              );
-            })}
+            {messages.map((message) => (
+              <div 
+                key={message.id} 
+                className={`p-3 rounded-lg whitespace-pre-line ${message.is_outgoing ? "bg-pink-400 self-end" : "bg-pink-300 self-start"}`}
+              >
+                {message.content}
+              </div>
+            ))}
           </div>
 
           {/* Message Input Box */}
