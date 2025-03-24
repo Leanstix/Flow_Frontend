@@ -26,7 +26,7 @@ const Layout = () => {
           {activeSection === "home" && (
             <>
               <div className="flex space-x-4 mb-4">
-                {["User1", "User2", "User3", "User4"].map((user, index) => (
+                {["User1", "User2", "User3", "User4", "User1", "User2", "User3", "User4"].map((user, index) => (
                   <FriendRequest key={index} username={user} />
                 ))}
               </div>
