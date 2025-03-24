@@ -132,7 +132,7 @@ export default function ChatComponent() {
         <div
           className={`${
             isMobileView ? 'w-full' : 'w-1/5'
-          } bg-pink-400 p-4 overflow-y-auto`}
+          } bg-[#070007] p-4 overflow-y-auto`}
         >
           <h2 className="text-white text-xl font-bold mb-4">Messages</h2>
           <ul>
@@ -140,11 +140,11 @@ export default function ChatComponent() {
               <li
                 key={conversation.id || index}
                 className={`flex items-center gap-3 mb-4 cursor-pointer p-2 rounded-lg ${
-                  selectedConversationId === conversation.id ? 'bg-pink-500' : ''
+                  selectedConversationId === conversation.id ? 'bg-[#070007]' : ''
                 }`}
                 onClick={() => setSelectedConversationId(conversation.id)}
               >
-                <div className="w-10 h-10 bg-white rounded-full"></div>
+                <div className="w-10 h-10 bg-[#070007] rounded-full"></div>
                 <div>
                   <p className="text-white font-bold">
                     {conversation.name || 'Unnamed Conversation'}
@@ -166,7 +166,7 @@ export default function ChatComponent() {
         <div
           className={`${
             isMobileView ? 'w-full' : 'w-4/5'
-          } bg-white p-4 flex flex-col justify-between`}
+          } bg-[#070007] p-4 flex flex-col justify-between`}
         >
           {isMobileView && selectedConversationId && (
             <div className="flex items-center gap-2 mb-4">
@@ -223,7 +223,7 @@ export default function ChatComponent() {
                     Attachment
                   </button>
                   {showAttachmentOptions && (
-                    <div className="absolute bottom-12 left-0 bg-white border rounded-lg shadow-lg p-2">
+                    <div className="absolute bottom-12 left-0 bg-[#070007] border rounded-lg shadow-lg p-2">
                       <ul>
                         <li
                           className="cursor-pointer p-2 hover:bg-gray-200"
