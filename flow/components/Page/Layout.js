@@ -22,7 +22,7 @@ const Layout = () => {
         </div>
 
         {/* Middle Section */}
-        <div className="col-span-6 h-screen overflow-y-auto p-5">
+        <div className="col-span-6 overflow-y-auto p-5">
           {activeSection === "home" && (
             <>
               <div className="flex space-x-4 mb-4">
