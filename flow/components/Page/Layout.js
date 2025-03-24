@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-import ChatComponent from "./ChatComponent";
+import ChatComponent from "@/app/messages/components/messages";
 import FriendRequest from "./FriendRequest";
 import Post from "./Post";
 import ActiveUsers from "./ActiveUsers";

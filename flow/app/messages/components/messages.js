@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchConversations, fetchMessages } from "../api/chatApi";
+import { fetchConversations, fetchMessages } from "@/app/lib/api"
 
 export default function ChatComponent({ selectedConversationId, setSelectedConversationId, showOnlyConversations, showOnlyMessages }) {
   const [conversations, setConversations] = useState([]);
