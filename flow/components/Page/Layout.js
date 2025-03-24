@@ -40,6 +40,7 @@ const Layout = () => {
               selectedConversationId={selectedConversationId}
               setSelectedConversationId={setSelectedConversationId}
               showOnlyMessages // Custom prop to show only selected messages
+              className="h-screen overflow-y-auto"
             />
           )}
 
