@@ -77,7 +77,7 @@ export default function ChatComponent({ selectedConversationId, setSelectedConve
   };
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col relative">
       {/* Show conversation list in right sidebar */}
       {showOnlyConversations && (
         <div className="h-full overflow-y-auto">
@@ -110,9 +110,9 @@ export default function ChatComponent({ selectedConversationId, setSelectedConve
 
       {/* Show messages in the middle section */}
       {showOnlyMessages && selectedConversationId && (
-        <div className="h-full flex flex-col justify-between">
+        <div className="h-full flex flex-col justify-between relative pb-16">
           {/* Messages List */}
-          <div className="flex flex-col gap-4 overflow-y-auto h-96">
+          <div className="flex flex-col gap-4 overflow-y-auto flex-grow p-4">
             {messages.map((message) => {
               const isExpanded = expandedMessages[message.id];
               const contentToShow = isExpanded ? message.content : message.content.slice(0, 255);
@@ -134,7 +134,7 @@ export default function ChatComponent({ selectedConversationId, setSelectedConve
           </div>
 
           {/* Message Input Box */}
-          <div className="flex items-center gap-2 mt-4">
+          <div className="absolute bottom-0 left-0 right-0 bg-white p-4 border-t flex items-center gap-2">
             <textarea
               type="text"
               placeholder="Type a message..."
