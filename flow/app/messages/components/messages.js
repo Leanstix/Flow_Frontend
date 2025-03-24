@@ -83,13 +83,25 @@ export default function ChatComponent({ selectedConversationId, setSelectedConve
         <div className="h-full overflow-y-auto">
           <h2 className="text-white text-xl font-bold mb-4">Messages</h2>
           <ul>
-            {conversations.map((conversation, index) => (
-              <li 
-                key={conversation.id || index} 
-                className={`p-2 rounded-lg cursor-pointer ${selectedConversationId === conversation.id ? "bg-gray-700" : ""}`}
+          {conversations.map((conversation, index) => (
+              <li
+                key={conversation.id || index}
+                className={`flex items-center gap-3 mb-4 cursor-pointer p-2 rounded-lg ${
+                  selectedConversationId === conversation.id ? 'bg-[#070007]' : ''
+                }`}
                 onClick={() => setSelectedConversationId(conversation.id)}
               >
-                <p className="text-white font-bold">{conversation.name || "Unnamed Conversation"}</p>
+                <div className="w-10 h-10 bg-[#070007] rounded-full"></div>
+                <div>
+                  <p className="text-white font-bold">
+                    {conversation.name || 'Unnamed Conversation'}
+                  </p>
+                  <p className="text-white text-sm">
+                    {conversation.last_message.content.length > 10
+                      ? conversation.last_message.content.slice(0, 10) + '...'
+                      : conversation.last_message.content || 'No messages yet'}
+                  </p>
+                </div>
               </li>
             ))}
           </ul>
