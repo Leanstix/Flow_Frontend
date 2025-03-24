@@ -14,7 +14,7 @@ const Layout = () => {
   return (
     <div className="bg-[#070007] h-screen">
       <Header />
-      <div className="bg-[#070007] grid grid-cols-12 mt-5">
+      <div className="bg-[#070007] h-screen grid grid-cols-12 mt-5">
         
         {/* Left Sidebar */}
         <div className="col-span-3 bg-[#070007] border-r border-white h-screen p-3">
@@ -22,7 +22,7 @@ const Layout = () => {
         </div>
 
         {/* Middle Section */}
-        <div className="col-span-6 overflow-y-auto p-5">
+        <div className="col-span-6 h-screen overflow-y-auto p-5">
           {activeSection === "home" && (
             <>
               <div className="flex space-x-4 mb-4">
