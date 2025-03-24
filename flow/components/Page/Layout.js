@@ -46,7 +46,7 @@ const Layout = () => {
 
         {/* Right Sidebar */}
         <div className="col-span-3 text-white border-l h-screen p-3">
-          <ActiveUsers users={["UserA", "UserB", "UserC", "UserD", "UserE"]} />
+          <ActiveUsers users={["UserA", "UserB", "UserC", "UserD", "UserE", "UserA", "UserB", "UserC", "UserD", "UserE"]} />
           <Announcement />
         </div>
       </div>
