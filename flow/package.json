@@ -11,6 +11,8 @@
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.2",
     "@shadcn/ui": "^0.0.4",
+    "@splidejs/react-splide": "^0.7.12",
+    "@splidejs/splide": "^4.1.4",
     "axios": "^1.7.9",
     "button": "^1.1.1",
     "card": "^2.5.4",

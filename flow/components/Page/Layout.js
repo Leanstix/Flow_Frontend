@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import ChatComponent from "@/app/messages/components/messages";
@@ -6,6 +6,8 @@ import FriendRequest from "./FriendRequest";
 import Post from "./Post";
 import ActiveUsers from "./ActiveUsers";
 import Announcement from "./Announcement";
+import { Splide, SplideSlide } from "@splidejs/react-splide";
+import "@splidejs/splide/dist/css/splide.min.css";
 
 const Layout = () => {
   const [activeSection, setActiveSection] = useState("home");
@@ -25,11 +27,31 @@ const Layout = () => {
         <div className="col-span-6 h-screen overflow-y-auto p-5">
           {activeSection === "home" && (
             <>
-              <div className="flex space-x-4 mb-4">
-                {["User1", "User2", "User3", "User4", "User1", "User2", "User3", "User4"].map((user, index) => (
-                  <FriendRequest key={index} username={user} />
+              {/* Friend Request Splide Carousel */}
+              <Splide
+                options={{
+                  type: "slide",
+                  perPage: 4, // Default to 4 items per view
+                  breakpoints: {
+                    1024: { perPage: 3 }, // Show 3 on medium screens
+                    768: { perPage: 2 }, // Show 2 on smaller screens
+                    480: { perPage: 1 }, // Show 1 on mobile screens
+                  },
+                  perMove: 1,
+                  pagination: false,
+                  arrows: true,
+                  gap: "1rem",
+                }}
+                className="mb-4"
+              >
+                {["User1", "User2", "User3", "User4", "User5", "User6", "User7", "User8"].map((user, index) => (
+                  <SplideSlide key={index}>
+                    <FriendRequest username={user} />
+                  </SplideSlide>
                 ))}
-              </div>
+              </Splide>
+
+              {/* Posts Section */}
               <Post name="John Doe" username="johndoe" content="Great developers don’t just write code—they architect solutions." />
               <Post name="Jane Doe" username="janedoe" content="Build with purpose and make an impact." />
               <Post name="John Doe" username="johndoe" content="Great developers don’t just write code—they architect solutions." />
@@ -43,7 +65,7 @@ const Layout = () => {
             <ChatComponent 
               selectedConversationId={selectedConversationId}
               setSelectedConversationId={setSelectedConversationId}
-              showOnlyMessages // Custom prop to show only selected messages
+              showOnlyMessages
               className="h-screen overflow-y-auto"
             />
           )}
@@ -62,7 +84,7 @@ const Layout = () => {
           {activeSection === "message" ? (
             <ChatComponent 
               setSelectedConversationId={setSelectedConversationId}
-              showOnlyConversations // Custom prop to show only conversation list
+              showOnlyConversations
               className="h-screen overflow-y-auto"
             />
           ) : (
