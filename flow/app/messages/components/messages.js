@@ -120,7 +120,7 @@ export default function ChatComponent({ selectedConversationId, setSelectedConve
               return (
                 <div 
                   key={message.id} 
-                  className={`p-3 rounded-lg whitespace-pre-line ${message.is_outgoing ? "bg-pink-400 self-end" : "bg-pink-300 self-start"}`}
+                  className={`p-3 rounded-lg whitespace-pre-line ${message.is_outgoing ? "bg-[#1F062E] self-end" : "bg-[#1F062E] self-start"}`}
                 >
                   {contentToShow}
                   {message.content.length > 255 && !isExpanded && (
@@ -134,7 +134,7 @@ export default function ChatComponent({ selectedConversationId, setSelectedConve
           </div>
 
           {/* Message Input Box */}
-          <div className="absolute bottom-0 left-0 right-0 bg-white p-4 border-t flex items-center gap-2">
+          <div className="absolute bottom-0 left-0 right-0 bg-white p-4 border flex items-center gap-2">
             <textarea
               type="text"
               placeholder="Type a message..."
@@ -144,7 +144,7 @@ export default function ChatComponent({ selectedConversationId, setSelectedConve
               onKeyDown={handleKeyDown}
               rows={2}
             />
-            <button className="bg-pink-400 text-white py-2 px-4 rounded-lg" onClick={handleSendMessage}>
+            <button className="bg-[#1F062E] text-white py-2 px-4 rounded-lg" onClick={handleSendMessage}>
               Send
             </button>
           </div>
