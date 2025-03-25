@@ -17,7 +17,6 @@ const Layout = () => {
   const [selectedConversationId, setSelectedConversationId] = useState(null);
   const [friendRequests, setFriendRequests] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
