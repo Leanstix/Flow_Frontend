@@ -18,7 +18,6 @@ const Layout = () => {
   const [friendRequests, setFriendRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState(null);
-  const [postComments, setPostComments] = useState({});
   const [error, setError] = useState(null);
 
   useEffect(() => {
