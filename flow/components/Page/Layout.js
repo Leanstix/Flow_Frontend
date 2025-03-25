@@ -15,6 +15,9 @@ const Layout = () => {
   const [selectedConversationId, setSelectedConversationId] = useState(null);
   const [friendRequests, setFriendRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [userData, setUserData] = useState(null);
+  const [postComments, setPostComments] = useState({});
+  const [posts, setPosts] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -44,6 +47,22 @@ const Layout = () => {
       }
       fetchPosts();
     }, []);
+
+    const getComments = async (postId) => {
+        try {
+          const response = await fetchComments(postId);
+          setPostComments((prev) => ({
+            ...prev,
+            [postId]: response.results,
+          }));
+        } catch (err) {
+          console.error("Failed to fetch comments:", err);
+          setPostComments((prev) => ({
+            ...prev,
+            [postId]: [],
+          }));
+        }
+      };
 
   return (
     <div className="bg-[#070007] h-screen">
