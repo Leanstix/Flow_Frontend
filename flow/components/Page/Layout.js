@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import Cookies from "js-cookie";
+import { fetchComments, fetchPosts } from "@/app/lib/api";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import ChatComponent from "@/app/messages/components/messages";
