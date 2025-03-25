@@ -19,7 +19,6 @@ const Layout = () => {
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState(null);
   const [postComments, setPostComments] = useState({});
-  const [posts, setPosts] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
