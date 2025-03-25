@@ -37,6 +37,14 @@ const Layout = () => {
     fetchFriendRequests();
   }, []);
 
+  useEffect(() => {
+      const cookieData = Cookies.get("user_data");
+      if (cookieData) {
+        setUserData(JSON.parse(cookieData));
+      }
+      fetchPosts();
+    }, []);
+
   return (
     <div className="bg-[#070007] h-screen">
       <Header />
