@@ -47,21 +47,7 @@ const Layout = () => {
       fetchPosts();
     }, []);
 
-    const getComments = async (postId) => {
-        try {
-          const response = await fetchComments(postId);
-          setPostComments((prev) => ({
-            ...prev,
-            [postId]: response.results,
-          }));
-        } catch (err) {
-          console.error("Failed to fetch comments:", err);
-          setPostComments((prev) => ({
-            ...prev,
-            [postId]: [],
-          }));
-        }
-      };
+    
 
   return (
     <div className="bg-[#070007] h-screen">
