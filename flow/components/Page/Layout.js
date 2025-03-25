@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
-import { fetchComments, fetchPosts, getFriendRequests } from "@/app/lib/api";
+import { fetchComments, fetchPosts } from "@/app/lib/api";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import ChatComponent from "@/app/messages/components/messages";
@@ -18,7 +18,6 @@ const Layout = () => {
   const [friendRequests, setFriendRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState(null);
-  const [friendRequests, setFriendRequests] = useState([]);
   const [postComments, setPostComments] = useState({});
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState(null);
