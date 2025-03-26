@@ -134,11 +134,11 @@ const Layout = () => {
                     name="user"
                     username="username"
                     content={post.content}
-                    likes={post.likes}
-                    reposts={post.reposts}
+                    likes={post.likes_count}
+                    //reposts={post.reposts}
                     comments={post.comments_count}
-                    reports={post.reports}
-                    views={post.views}
+                    //reports={post.reports}
+                    //views={post.views}
                   />
                 ))
               )}
