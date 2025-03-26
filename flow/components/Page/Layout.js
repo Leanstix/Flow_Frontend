@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
-import { fetchComments, fetchPosts } from "@/app/lib/api";
+import { fetchComments, getPosts } from "@/app/lib/api";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import ChatComponent from "@/app/messages/components/messages";
@@ -50,7 +50,7 @@ const Layout = () => {
     const loadPosts = async () => {
       console.log("Fetching posts...");
       try {
-        const fetchedPosts = await fetchPosts(); // Call API function to get posts
+        const fetchedPosts = await getPosts(); // Call API function to get posts
         setPosts(fetchedPosts);
       } catch (err) {
         console.error("Error fetching posts:", err);
@@ -60,6 +60,22 @@ const Layout = () => {
 
     loadPosts();
   }, []);
+
+  const getComments = async (postId) => {
+    try {
+      const response = await fetchComments(postId);
+      setPostComments((prev) => ({
+        ...prev,
+        [postId]: response.results,
+      }));
+    } catch (err) {
+      console.error("Failed to fetch comments:", err);
+      setPostComments((prev) => ({
+        ...prev,
+        [postId]: [],
+      }));
+    }
+  };
 
   return (
     <div className="bg-[#070007] h-screen">
