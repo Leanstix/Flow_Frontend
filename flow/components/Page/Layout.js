@@ -129,12 +129,12 @@ const Layout = () => {
                 posts.map((post) => (
                   <Post
                     key={post.id}
-                    name={post.author.name}
+                    //name={post.author.name}
                     username={post.author.username}
                     content={post.content}
                     likes={post.likes}
                     reposts={post.reposts}
-                    comments={post.comments}
+                    comments={post.comments_count}
                     reports={post.reports}
                     views={post.views}
                   />
