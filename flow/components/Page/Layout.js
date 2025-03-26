@@ -130,7 +130,9 @@ const Layout = () => {
                   <Post
                     key={post.id}
                     //name={post.author.name}
-                    username={post.author.username}
+                    //username={post.author.username}
+                    name="user"
+                    username="username"
                     content={post.content}
                     likes={post.likes}
                     reposts={post.reposts}
