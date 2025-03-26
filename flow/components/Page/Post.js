@@ -5,7 +5,6 @@ import Comment from "@/public/Icons/Comment.svg";
 import Report from "@/public/Icons/Report.svg";
 import View from "@/public/Icons/View.svg";
 import User from "@/public/User.svg";
-import { fecthComments,getFeedPosts, repost, toggleLike, addComment } from "@/app/lib/api";
 
 const Post = ({ name, username, content, likes, reposts, comments, reports, views }) => {
   const fetchFriendRequests = async () => {
