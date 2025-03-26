@@ -48,6 +48,7 @@ const Layout = () => {
     }
 
     const loadPosts = async () => {
+      console.log("Fetching posts...");
       try {
         const fetchedPosts = await fetchPosts(); // Call API function to get posts
         setPosts(fetchedPosts);
