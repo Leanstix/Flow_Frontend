@@ -10,7 +10,7 @@ import ActiveUsers from "./ActiveUsers";
 import Announcement from "./Announcement";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/splide/dist/css/splide.min.css";
-import api from "@/app/api"; // Ensure you have this import
+import api from "@/app/lib/api";
 
 const Layout = () => {
   const [activeSection, setActiveSection] = useState("home");
