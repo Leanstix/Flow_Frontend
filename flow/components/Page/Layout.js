@@ -16,6 +16,7 @@ const Layout = () => {
   const [activeSection, setActiveSection] = useState("home");
   const [selectedConversationId, setSelectedConversationId] = useState(null);
   const [friendRequests, setFriendRequests] = useState([]);
+  const [posts, setPosts] = useState([]); // State for storing posts
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -40,14 +41,23 @@ const Layout = () => {
   }, []);
 
   useEffect(() => {
-      const cookieData = Cookies.get("user_data");
-      if (cookieData) {
-        setUserData(JSON.parse(cookieData));
-      }
-      fetchPosts();
-    }, []);
+    const cookieData = Cookies.get("user_data");
+    if (cookieData) {
+      setUserData(JSON.parse(cookieData));
+    }
 
-    
+    const loadPosts = async () => {
+      try {
+        const fetchedPosts = await fetchPosts(); // Call API function to get posts
+        setPosts(fetchedPosts);
+      } catch (err) {
+        console.error("Error fetching posts:", err);
+        setError("Failed to load posts. Please try again later.");
+      }
+    };
+
+    loadPosts();
+  }, []);
 
   return (
     <div className="bg-[#070007] h-screen">
@@ -94,9 +104,24 @@ const Layout = () => {
                 </Splide>
               )}
 
-              {/* Posts Section */}
-              <Post name="John Doe" username="johndoe" content="Great developers don’t just write code—they architect solutions." />
-              <Post name="Jane Doe" username="janedoe" content="Build with purpose and make an impact." />
+              {/* Posts Section - Fetch and display dynamically */}
+              {posts.length === 0 ? (
+                <p className="text-gray-500">No posts available</p>
+              ) : (
+                posts.map((post) => (
+                  <Post
+                    key={post.id}
+                    name={post.author.name}
+                    username={post.author.username}
+                    content={post.content}
+                    likes={post.likes}
+                    reposts={post.reposts}
+                    comments={post.comments}
+                    reports={post.reports}
+                    views={post.views}
+                  />
+                ))
+              )}
             </>
           )}
 
