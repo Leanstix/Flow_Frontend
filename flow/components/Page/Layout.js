@@ -19,6 +19,7 @@ const Layout = () => {
   const [posts, setPosts] = useState([]); // State for storing posts
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [userDate, setUserData] = useState(null);
 
   useEffect(() => {
     const fetchFriendRequests = async () => {
